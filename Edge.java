@@ -1,3 +1,5 @@
+// Maddie London and Berke Nuri
+
 public class Edge
 {
     Vertex v1; // represents one of the vertices at the end of the edge
@@ -10,5 +12,6 @@ public class Edge
         v2 = y;
         hovered = false;
         weight = 1.0; // default edge weight is 1
+        System.out.println("in the edge constructor");
     }
 } 

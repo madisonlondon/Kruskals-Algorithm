@@ -1,3 +1,5 @@
+// Maddie London and Berke Nuri
+
 import java.awt.Point;
 
 public class Vertex
@@ -7,6 +9,7 @@ public class Vertex
     
     public Vertex(Point x) {
         p = x;
-        highlighted = false;
+        hovered = false;
+        System.out.println("in the vertex constructor");
     }
 }
