@@ -17,6 +17,7 @@ public class Cloud
     			
     			Vertex v = (Vertex) c2.vertices.get(i);
     			c1.vertices.add(v);
+                v.inCloud = c1;
         }
     }
 }
