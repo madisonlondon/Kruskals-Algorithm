@@ -6,6 +6,7 @@ public class Vertex
 {
     Point p;
     boolean hovered;
+    Cloud inCloud;
     
     public Vertex(Point x) {
         p = x;
