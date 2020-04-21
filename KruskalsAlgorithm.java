@@ -51,7 +51,7 @@ project.addWindowListener(new WindowAdapter() {
     public void mouseClicked(final MouseEvent mouseEvent) {
     }
 
-//     @Override
+	// Override
     public void mouseMoved(final MouseEvent mouseEvent) {
     }
 
