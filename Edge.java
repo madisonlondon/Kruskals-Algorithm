@@ -1,6 +1,8 @@
 // Maddie London and Berke Nuri
 
-public class Edge
+import java.util.ArrayList;
+
+public class Edge implements Comparable
 {
     Vertex v1; // represents one of the vertices at the end of the edge
     Vertex v2; // represents one of the vertices at the end of the edge
@@ -13,5 +15,17 @@ public class Edge
         hovered = false;
         weight = 1.0; // default edge weight is 1
         System.out.println("in the edge constructor");
+    }
+    
+    @Override
+    public int compareTo(Object o) {
+       return  (this.weight < ((Edge) o).weight ? -1 : (this.weight == ((Edge) o).weight ? 0 : 1));
+   }
+    
+    public ArrayList<Edge> sortEdges(ArrayList<Edge> edges) {
+		
+    	
+    		return edges;
+    		
     }
 } 
