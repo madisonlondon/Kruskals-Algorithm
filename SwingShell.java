@@ -14,7 +14,8 @@ public class SwingShell extends JFrame
     final int NODE_RADIUS = 8;
 
     // GUI stuff
-    KruskalsAlgorithm canvas = null;
+
+    ConvexHull canvas = null;
 
     JPanel buttonPanel = null;
     JButton vertexButton, edgeButton, computeButton, clearButton;
@@ -44,7 +45,8 @@ public class SwingShell extends JFrame
 					    BoxLayout.Y_AXIS));
 
 	//Create the drawing area
-	canvas = new KruskalsAlgorithm();
+
+	canvas = new ConvexHull(this);
 	canvas.addMouseListener(this);
 
 	Dimension canvasSize = new Dimension(900,500);
@@ -157,7 +159,7 @@ public class SwingShell extends JFrame
 
 	if (buttonIdentifier.equals("convexHull")) {
 	    // compute convex hull
-	    canvas.KruskalsAlgorithm();
+	    canvas.convexHull();
 	    canvas.repaint();
 	} else if (buttonIdentifier.equals("clearDiagram")) {
 	    vertices.clear();
