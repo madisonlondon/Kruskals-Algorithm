@@ -6,8 +6,9 @@ import javax.swing.event.*;
 import java.awt.geom.*;
 import java.util.*;
 
+
 public class KruskalsAlgorithm extends JFrame
-    implements ActionListener, MouseListener {
+    implements ActionListener, MouseListener, MouseMotionListener {
 
     // The radius in pixels of the circles drawn in graph_panel
 
@@ -18,7 +19,8 @@ public class KruskalsAlgorithm extends JFrame
     MST canvas = null;
 
     JPanel buttonPanel = null;
-    JButton addVertexButton, removeVertexButton, addEdgeButton, removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
+    JButton addVertexButton, removeVertexButton, addEdgeButton,
+    removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
 
     // Data Structures for the Points
 
@@ -45,8 +47,9 @@ public class KruskalsAlgorithm extends JFrame
 
 	//Create the drawing area
 
-	canvas = new MST(this);
-	canvas.addMouseListener(this);
+	canvas = new MST();
+	canvas.addMouseListener(null);
+	(this.canvas = new MST(this)).addMouseListener((MouseListener)this);
 
 	Dimension canvasSize = new Dimension(900,500);
 	canvas.setMinimumSize(canvasSize);
@@ -81,7 +84,7 @@ public class KruskalsAlgorithm extends JFrame
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        addVertexButton.getBorder()));
-                       
+
     //Dimension buttonSize = new Dimension(100,50);
 	removeVertexButton = new JButton("Remove Vertex");
 	removeVertexButton.setMinimumSize(buttonSize);
@@ -109,7 +112,7 @@ public class KruskalsAlgorithm extends JFrame
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        addEdgeButton.getBorder()));
-    
+
     //Dimension buttonSize = new Dimension(100,50);
 	removeEdgeButton = new JButton("Remove Edge");
 	removeEdgeButton.setMinimumSize(buttonSize);
@@ -123,7 +126,7 @@ public class KruskalsAlgorithm extends JFrame
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        removeEdgeButton.getBorder()));
-        
+
     //Dimension buttonSize = new Dimension(100,50);
 	setEdgeWeightButton = new JButton("Set/Change Edge Weight");
 	setEdgeWeightButton.setMinimumSize(buttonSize);
@@ -217,7 +220,7 @@ public class KruskalsAlgorithm extends JFrame
 
     public void mouseClicked(MouseEvent e) {
 	Point click_point = e.getPoint();
-	vertices.add(click_point);
+	//vertices.add(click_point);
 	canvas.repaint();
     }
 
@@ -235,4 +238,10 @@ public class KruskalsAlgorithm extends JFrame
     public void mousePressed(MouseEvent e) {}
 
     public void mouseDragged(MouseEvent e) {}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
 }
