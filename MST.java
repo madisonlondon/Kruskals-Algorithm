@@ -1,9 +1,9 @@
-import java.util.Comparator;
-import java.util.List;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.geom.*;
+import java.util.*;
 
 // 
 // Decompiled by Procyon v0.5.36
@@ -11,12 +11,47 @@ import java.awt.Point;
 
 public class MST
 {
+    KruskalsAlgorithm parent = null;
     ArrayList<Edge> graphEdges;
+    ArrayList<Vertex> graphVertices;
     ArrayList<Edge> mst;
+    Color currentColor = Color.red;
     
+    public MST(KruskalsAlgorithm _parent) {
+        super();
+        parent = _parent;
+        graphVertices = parent.vertices;
+        graphEdges = parent.edges;
+    }
+
     public MST() {
     		graphEdges = new ArrayList<Edge>();
     		mst = new ArrayList<Edge>();
+    }
+
+    public void paintComponent(Graphics g) {
+        //super.paintComponent(g);
+    
+        g.setColor(currentColor);
+    
+        ListIterator iterator = graphVertices.listIterator(0);
+    
+        Point currentVertex = null;
+    
+        for (int i=0; i < graphVertices.size(); ++i) {
+            currentVertex = (Point) iterator.next();
+            g.fillOval(currentVertex.x - parent.NODE_RADIUS,
+                   currentVertex.y - parent.NODE_RADIUS,
+                   2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
+        }
+    }
+    
+    public void changeColor() {
+        if (currentColor.equals(Color.red)) {
+            currentColor = Color.yellow;
+        } else {
+            currentColor = Color.red;
+        }
     }
     
     /*

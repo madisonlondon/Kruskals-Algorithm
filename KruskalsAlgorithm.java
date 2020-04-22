@@ -1,4 +1,3 @@
-// Maddie London and Berke Nuri 
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,71 +6,233 @@ import javax.swing.event.*;
 import java.awt.geom.*;
 import java.util.*;
 
+public class KruskalsAlgorithm extends JFrame
+    implements ActionListener, MouseListener {
 
-public class KruskalsAlgorithm extends JFrame implements ActionListener, MouseListener, MouseMotionListener
-{
-    final int VERTEX_RADIUS = 8; // The radius in pixels of the vertex drawn 
+    // The radius in pixels of the circles drawn in graph_panel
 
-    KruskalsAlgorithm canvas = null;  // GUI stuff
+    final int NODE_RADIUS = 8;
+
+    // GUI stuff
+
+    MST canvas = null;
 
     JPanel buttonPanel = null;
-    JButton addVertexButton, removeVertexButton, addEdgeButton, removeEdgeButton, edgeWeightButton, clearButton, createMstButton, okButton;
+    JButton addVertexButton, removeVertexButton, addEdgeButton, removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
 
     // Data Structures for the Points
 
     /*This holds the set of vertices, all
      * represented as type Point.
      */
-    LinkedList<Vertex> vertices = null;
-    LinkedList<Edge> edges = null;
-    LinkedList<Point> hull = null;
-    //LinkedList<edge> edges = null;
+    ArrayList<Vertex> vertices = null;
+    ArrayList<Edge> edges = null;
+
+    // Event handling stuff
+    Dimension panelDim = null;
 
     public KruskalsAlgorithm() {
+	super("Generic Swing App");
+	setSize(new Dimension(900,575));
+
+	// Initialize main data structures
+	initializeDataStructures();
+
+	//The content pane
+	Container contentPane = getContentPane();
+	contentPane.setLayout(new BoxLayout(contentPane,
+					    BoxLayout.Y_AXIS));
+
+	//Create the drawing area
+
+	canvas = new MST(this);
+	canvas.addMouseListener(this);
+
+	Dimension canvasSize = new Dimension(900,500);
+	canvas.setMinimumSize(canvasSize);
+	canvas.setPreferredSize(canvasSize);
+	canvas.setMaximumSize(canvasSize);
+	canvas.setBackground(Color.black);
+
+	// Create buttonPanel and fill it
+	buttonPanel = new JPanel();
+	Dimension panelSize = new Dimension(900,75);
+	buttonPanel.setMinimumSize(panelSize);
+	buttonPanel.setPreferredSize(panelSize);
+	buttonPanel.setMaximumSize(panelSize);
+	buttonPanel.setLayout(new BoxLayout(buttonPanel,
+					    BoxLayout.X_AXIS));
+	buttonPanel.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.black),
+					   buttonPanel.getBorder()));
+
+	Dimension buttonSize = new Dimension(150,50);
+	addVertexButton = new JButton("Add Vertex");
+	addVertexButton.setMinimumSize(buttonSize);
+	addVertexButton.setPreferredSize(buttonSize);
+	addVertexButton.setMaximumSize(buttonSize);
+	addVertexButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	addVertexButton.setActionCommand("getMST");
+	addVertexButton.addActionListener(this);
+	addVertexButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.green),
+                       addVertexButton.getBorder()));
+                       
+    //Dimension buttonSize = new Dimension(100,50);
+	removeVertexButton = new JButton("Remove Vertex");
+	removeVertexButton.setMinimumSize(buttonSize);
+	removeVertexButton.setPreferredSize(buttonSize);
+	removeVertexButton.setMaximumSize(buttonSize);
+	removeVertexButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	removeVertexButton.setActionCommand("getMST");
+	removeVertexButton.addActionListener(this);
+	removeVertexButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.blue),
+					   removeVertexButton.getBorder()));
+
+	//Dimension buttonSize = new Dimension(100,50);
+	addEdgeButton = new JButton("Add Edge");
+	addEdgeButton.setMinimumSize(buttonSize);
+	addEdgeButton.setPreferredSize(buttonSize);
+	addEdgeButton.setMaximumSize(buttonSize);
+	addEdgeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	addEdgeButton.setActionCommand("getMST");
+	addEdgeButton.addActionListener(this);
+	addEdgeButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.green),
+                       addEdgeButton.getBorder()));
+    
+    //Dimension buttonSize = new Dimension(100,50);
+	removeEdgeButton = new JButton("Remove Edge");
+	removeEdgeButton.setMinimumSize(buttonSize);
+	removeEdgeButton.setPreferredSize(buttonSize);
+	removeEdgeButton.setMaximumSize(buttonSize);
+	removeEdgeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	removeEdgeButton.setActionCommand("getMST");
+	removeEdgeButton.addActionListener(this);
+	removeEdgeButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.green),
+                       removeEdgeButton.getBorder()));
+        
+    //Dimension buttonSize = new Dimension(100,50);
+	setEdgeWeightButton = new JButton("Set/Change Edge Weight");
+	setEdgeWeightButton.setMinimumSize(buttonSize);
+	setEdgeWeightButton.setPreferredSize(buttonSize);
+	setEdgeWeightButton.setMaximumSize(buttonSize);
+	setEdgeWeightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	setEdgeWeightButton.setActionCommand("getMST");
+	setEdgeWeightButton.addActionListener(this);
+	setEdgeWeightButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.green),
+					   setEdgeWeightButton.getBorder()));
+
+	//Dimension buttonSize = new Dimension(100,50);
+	computeMstButton = new JButton("Compute MST");
+	computeMstButton.setMinimumSize(buttonSize);
+	computeMstButton.setPreferredSize(buttonSize);
+	computeMstButton.setMaximumSize(buttonSize);
+	computeMstButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	computeMstButton.setActionCommand("getMST");
+	computeMstButton.addActionListener(this);
+	computeMstButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.blue),
+					   computeMstButton.getBorder()));
+
+
+	clearButton = new JButton("Clear");
+	clearButton.setMinimumSize(buttonSize);
+	clearButton.setPreferredSize(buttonSize);
+	clearButton.setMaximumSize(buttonSize);
+	clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	clearButton.setActionCommand("clearDiagram");
+	clearButton.addActionListener(this);
+	clearButton.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.red),
+					   clearButton.getBorder()));
+
+	buttonPanel.add(Box.createHorizontalGlue());
+	buttonPanel.add(addVertexButton);
+	buttonPanel.add(Box.createHorizontalGlue());
+	buttonPanel.add(removeVertexButton);
+	buttonPanel.add(Box.createHorizontalGlue());
+	buttonPanel.add(addEdgeButton);
+	buttonPanel.add(Box.createHorizontalGlue());
+	buttonPanel.add(removeEdgeButton);
+    buttonPanel.add(Box.createHorizontalGlue());
+    buttonPanel.add(setEdgeWeightButton);
+    buttonPanel.add(Box.createHorizontalGlue());
+    buttonPanel.add(computeMstButton);
+    buttonPanel.add(Box.createHorizontalGlue());
+    buttonPanel.add(clearButton);
+	buttonPanel.add(Box.createHorizontalGlue());
+
+	contentPane.add((Component)this.canvas);
+	contentPane.add(this.buttonPanel);
     }
 
-    public static void main(final String[] array) {
-        final KruskalsAlgorithm project = new KruskalsAlgorithm();
-project.addWindowListener(new WindowAdapter() {
+    public static void main(String[] args) {
+
+    KruskalsAlgorithm project = new KruskalsAlgorithm();
+	project.addWindowListener(new WindowAdapter() {
 		public void
-		    windowClosing(WindowEvent e) {
-		    System.exit(0);
+			windowClosing(WindowEvent e) {
+			System.exit(0);
 		}
-	    }
-				  );
+		}
+					);
 	project.pack();
 	project.setVisible(true);
     }
 
-	// Override
-    public void actionPerformed(final ActionEvent actionEvent) {
-}
+    public void actionPerformed(ActionEvent e) {
 
-	// Override
-    public void mouseClicked(final MouseEvent mouseEvent) {
+	String buttonIdentifier = e.getActionCommand();
+
+	if (buttonIdentifier.equals("getMST")) {
+	    // compute convex hull
+	    canvas.getMST();
+	    canvas.repaint();
+	} else if (buttonIdentifier.equals("clearDiagram")) {
+	    vertices.clear();
+	    edges.clear();
+	    canvas.repaint();
+	}
     }
 
-	// Override
-    public void mouseMoved(final MouseEvent mouseEvent) {
+    public void mouseClicked(MouseEvent e) {
+	Point click_point = e.getPoint();
+	vertices.add(click_point);
+	canvas.repaint();
     }
 
-   	// Override
-    public void mouseExited(final MouseEvent mouseEvent) {
+    public void initializeDataStructures() {
+	vertices = new ArrayList<Vertex>();
+	edges = new ArrayList<Edge>();
     }
 
-    // Override
-    public void mouseEntered(final MouseEvent mouseEvent) {
-    }
+    public void mouseExited(MouseEvent e) {}
 
-    // Override
-    public void mouseReleased(final MouseEvent mouseEvent) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
-    // Override
-    public void mousePressed(final MouseEvent mouseEvent) {
-    }
+    public void mouseReleased(MouseEvent e) {}
 
-    // Override
-    public void mouseDragged(final MouseEvent mouseEvent) {
-    }
+    public void mousePressed(MouseEvent e) {}
+
+    public void mouseDragged(MouseEvent e) {}
 }
