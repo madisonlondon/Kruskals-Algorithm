@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -6,29 +5,38 @@ import javax.swing.event.*;
 import java.awt.geom.*;
 import java.util.*;
 
+
 public class KruskalsAlgorithm extends JFrame
-    implements ActionListener, MouseListener {
+    implements ActionListener, MouseListener, MouseMotionListener {
 
     // The radius in pixels of the circles drawn in graph_panel
 
     final int NODE_RADIUS = 8;
+
+    int STATE = -1;
+    int ADD_VERTEX = 0;
+    int REMOVE_VERTEX = 1;
+    int ADD_EDGE_1 = 2;
+    int ADD_EDGE_2 = 3;
+    int REMOVE_EDGE = 4;
+    int SET_EDGE_WEIGHT = 5;
+    int COMPUTE_MST = 6;
+
+    int clickedVertexIndex;
 
     // GUI stuff
 
     MST canvas = null;
 
     JPanel buttonPanel = null;
-    JButton addVertexButton, removeVertexButton, addEdgeButton, removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
+    JButton addVertexButton, removeVertexButton, addEdgeButton,
+    removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
 
-    // Data Structures for the Points
-
-    /*This holds the set of vertices, all
-     * represented as type Point.
-     */
     ArrayList<Vertex> vertices = null;
     ArrayList<Edge> edges = null;
+    ArrayList<Vertex> cloud = null;
+    ArrayList<Edge> mst = null;
 
-    // Event handling stuff
     Dimension panelDim = null;
 
     public KruskalsAlgorithm() {
@@ -47,6 +55,7 @@ public class KruskalsAlgorithm extends JFrame
 
 	canvas = new MST(this);
 	canvas.addMouseListener(this);
+	canvas.addMouseMotionListener(this);
 
 	Dimension canvasSize = new Dimension(900,500);
 	canvas.setMinimumSize(canvasSize);
@@ -74,21 +83,21 @@ public class KruskalsAlgorithm extends JFrame
 	addVertexButton.setPreferredSize(buttonSize);
 	addVertexButton.setMaximumSize(buttonSize);
 	addVertexButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	addVertexButton.setActionCommand("getMST");
+	addVertexButton.setActionCommand("addVertex");
 	addVertexButton.addActionListener(this);
 	addVertexButton.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        addVertexButton.getBorder()));
-                       
+
     //Dimension buttonSize = new Dimension(100,50);
 	removeVertexButton = new JButton("Remove Vertex");
 	removeVertexButton.setMinimumSize(buttonSize);
 	removeVertexButton.setPreferredSize(buttonSize);
 	removeVertexButton.setMaximumSize(buttonSize);
 	removeVertexButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	removeVertexButton.setActionCommand("getMST");
+	removeVertexButton.setActionCommand("removeVertex");
 	removeVertexButton.addActionListener(this);
 	removeVertexButton.
 	    setBorder(BorderFactory.
@@ -102,28 +111,28 @@ public class KruskalsAlgorithm extends JFrame
 	addEdgeButton.setPreferredSize(buttonSize);
 	addEdgeButton.setMaximumSize(buttonSize);
 	addEdgeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	addEdgeButton.setActionCommand("getMST");
+	addEdgeButton.setActionCommand("addEdge");
 	addEdgeButton.addActionListener(this);
 	addEdgeButton.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        addEdgeButton.getBorder()));
-    
+
     //Dimension buttonSize = new Dimension(100,50);
 	removeEdgeButton = new JButton("Remove Edge");
 	removeEdgeButton.setMinimumSize(buttonSize);
 	removeEdgeButton.setPreferredSize(buttonSize);
 	removeEdgeButton.setMaximumSize(buttonSize);
 	removeEdgeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	removeEdgeButton.setActionCommand("getMST");
+	removeEdgeButton.setActionCommand("removeEdge");
 	removeEdgeButton.addActionListener(this);
 	removeEdgeButton.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.green),
                        removeEdgeButton.getBorder()));
-        
+
     //Dimension buttonSize = new Dimension(100,50);
 	setEdgeWeightButton = new JButton("Set/Change Edge Weight");
 	setEdgeWeightButton.setMinimumSize(buttonSize);
@@ -204,26 +213,126 @@ public class KruskalsAlgorithm extends JFrame
 
 	String buttonIdentifier = e.getActionCommand();
 
-	if (buttonIdentifier.equals("getMST")) {
-	    // compute convex hull
-	    canvas.getMST();
-	    canvas.repaint();
-	} else if (buttonIdentifier.equals("clearDiagram")) {
-	    vertices.clear();
-	    edges.clear();
-	    canvas.repaint();
-	}
+	if (buttonIdentifier.equals("addVertex")) {
+        STATE = ADD_VERTEX;
+    }
+    else if (buttonIdentifier.equals("removeVertex")) {
+        STATE = REMOVE_VERTEX;
+    }
+    else if (buttonIdentifier.equals("addEdge")) {
+        STATE = ADD_EDGE_1;
+    }
+    else if (buttonIdentifier.equals("removeEdge")) {
+        STATE = REMOVE_EDGE;
+    }
+    else if (buttonIdentifier.equals("changeEdgeWeight")) {
+        STATE = SET_EDGE_WEIGHT;
+    }
+    else if (buttonIdentifier.equals("createMST")) {
+        STATE = COMPUTE_MST;
+        mst = new MST(edges).getMST();
+        canvas.repaint();
+    }
+    else if (buttonIdentifier.equals("clear")) {
+        vertices.clear();
+        edges.clear();
+        cloud.clear();
+        //this.changeWeightNdx = -1;
+        STATE = -1;
+        canvas.repaint();
     }
 
+    }
+
+    public int onAVertex(Point point) {
+        int n = -1;
+
+        for (int i = 0; i < vertices.size(); ++i) {
+
+        		Vertex vertex = vertices.get(i);
+
+            if (point.distance(vertex.p) <= 8.0) {
+                n = i;
+                vertex.hovered = true;
+                break;
+            }
+            vertex.hovered = false;
+
+        }
+        return n;
+    }
+
+    public void removeVertex(int n) {
+
+        Vertex vertex = vertices.get(n);
+
+        for (int i = 0; i < vertex.inEdges.size(); ++i) {
+            edges.remove(vertex.inEdges.get(i));
+        }
+
+        vertices.remove(n);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    	if (STATE == ADD_VERTEX) {
+    		Point point = e.getPoint();
+    		vertices.add(new Vertex(point));
+        canvas.repaint();
+    	}
+    	else if (STATE == REMOVE_VERTEX) {
+    		int vertexIndex = onAVertex(e.getPoint());
+    		if (vertexIndex >= 0)
+    			removeVertex(vertexIndex);
+
+    		canvas.repaint();
+    	}
+    	else if (STATE == ADD_EDGE_1) {
+    		clickedVertexIndex = onAVertex(e.getPoint());
+    		STATE = ADD_EDGE_2;
+    		canvas.repaint();
+    	}
+    	else if (STATE == ADD_EDGE_2) {
+    		int vertexIndex = onAVertex(e.getPoint());
+
+    		Vertex vertex = vertices.get(clickedVertexIndex);
+        Vertex vertex2 = vertices.get(vertexIndex);
+
+        Edge edge = new Edge(vertex, vertex2);
+        edges.add(edge);
+        vertex.inEdges.add(edge);
+        vertex2.inEdges.add(edge);
+
+        Vertex vertex3 = vertex;
+        Vertex vertex4 = vertex2;
+
+        vertex4.hovered = false;
+        vertex3.hovered = false;
+        //this.tempEdge = null;
+        STATE = ADD_EDGE_1;
+        canvas.repaint();
+
+    	}
+
+    }
+
+
+
+
+/*
     public void mouseClicked(MouseEvent e) {
 	Point click_point = e.getPoint();
-	vertices.add(click_point);
+	vertices.add(new Vertex(click_point));
 	canvas.repaint();
     }
-
+*/
     public void initializeDataStructures() {
-	vertices = new ArrayList<Vertex>();
+
+    	vertices = new ArrayList<Vertex>();
 	edges = new ArrayList<Edge>();
+	cloud = new ArrayList<Vertex>();
+	mst = new ArrayList<Edge>();
     }
 
     public void mouseExited(MouseEvent e) {}
@@ -235,4 +344,10 @@ public class KruskalsAlgorithm extends JFrame
     public void mousePressed(MouseEvent e) {}
 
     public void mouseDragged(MouseEvent e) {}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
 }
