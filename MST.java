@@ -2,8 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.awt.geom.*;
 import java.util.*;
+import javax.swing.JPanel;
 
 //
 // Decompiled by Procyon v0.5.36
@@ -30,20 +30,38 @@ public class MST extends JPanel
     		mst = new ArrayList<Edge>();
     }
 
+
+    public MST(ArrayList<Edge> graph) {
+        graphEdges.addAll(graph);
+        mst = new ArrayList<Edge>();
+        //graphVertices = new ArrayList<Vertex>();
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         g.setColor(currentColor);
 
-        ListIterator<Vertex> iterator = graphVertices.listIterator(0);
+        //ListIterator<Vertex> iterator = graphVertices.listIterator(0);
 
-        Vertex currentVertex = null;
+        //Vertex currentVertex = null;
 
-        for (int i=0; i < graphVertices.size(); ++i) {
-            currentVertex = (Vertex) iterator.next();
+        for (int i = 0; i < graphVertices.size(); ++i) {
+            //currentVertex = (Vertex) iterator.next();
+        		Vertex currentVertex = graphVertices.get(i);
+
             g.fillOval(currentVertex.p.x - parent.NODE_RADIUS,
                    currentVertex.p.y - parent.NODE_RADIUS,
                    2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
+
+        }
+
+        for (int i = 0; i < graphEdges.size(); ++i) {
+            Edge edge = graphEdges.get(i);
+
+            Point p1 = edge.v1.p;
+            Point p2 = edge.v2.p;
+            g.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
     }
 
@@ -54,13 +72,6 @@ public class MST extends JPanel
             currentColor = Color.red;
         }
     }
-
-
-    public MST(ArrayList<Edge> graph) {
-        graphEdges.addAll(graph);
-        mst = new ArrayList<Edge>();
-    }
-
 
     public ArrayList<Edge> getMST() {
 
