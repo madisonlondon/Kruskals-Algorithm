@@ -28,7 +28,8 @@ public class KruskalsAlgorithm extends JFrame
 
     MST canvas = null;
 
-    JPanel buttonPanel = null;
+    JPanel buttonPanel1 = null;
+    JPanel buttonPanel2 = null;
     JButton addVertexButton, removeVertexButton, addEdgeButton,
     removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton;
 
@@ -63,19 +64,32 @@ public class KruskalsAlgorithm extends JFrame
 	canvas.setMaximumSize(canvasSize);
 	canvas.setBackground(Color.black);
 
-	// Create buttonPanel and fill it
-	buttonPanel = new JPanel();
+	// Create buttonPanel1 and fill it
+	buttonPanel1 = new JPanel();
 	Dimension panelSize = new Dimension(900,75);
-	buttonPanel.setMinimumSize(panelSize);
-	buttonPanel.setPreferredSize(panelSize);
-	buttonPanel.setMaximumSize(panelSize);
-	buttonPanel.setLayout(new BoxLayout(buttonPanel,
+	buttonPanel1.setMinimumSize(panelSize);
+	buttonPanel1.setPreferredSize(panelSize);
+	buttonPanel1.setMaximumSize(panelSize);
+	buttonPanel1.setLayout(new BoxLayout(buttonPanel1,
 					    BoxLayout.X_AXIS));
-	buttonPanel.
+                        buttonPanel1.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.black),
-					   buttonPanel.getBorder()));
+                       buttonPanel1.getBorder()));
+                       
+    // Create buttonPanel2 and fill it
+	buttonPanel2 = new JPanel();
+	buttonPanel2.setMinimumSize(panelSize);
+	buttonPanel2.setPreferredSize(panelSize);
+	buttonPanel2.setMaximumSize(panelSize);
+	buttonPanel2.setLayout(new BoxLayout(buttonPanel2,
+					    BoxLayout.X_AXIS));
+                        buttonPanel2.
+	    setBorder(BorderFactory.
+		      createCompoundBorder(BorderFactory.
+					   createLineBorder(Color.black),
+					   buttonPanel2.getBorder()));
 
 	Dimension buttonSize = new Dimension(150,50);
 	addVertexButton = new JButton("Add Vertex");
@@ -91,7 +105,6 @@ public class KruskalsAlgorithm extends JFrame
 					   createLineBorder(Color.green),
                        addVertexButton.getBorder()));
 
-    //Dimension buttonSize = new Dimension(100,50);
 	removeVertexButton = new JButton("Remove Vertex");
 	removeVertexButton.setMinimumSize(buttonSize);
 	removeVertexButton.setPreferredSize(buttonSize);
@@ -102,10 +115,9 @@ public class KruskalsAlgorithm extends JFrame
 	removeVertexButton.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
-					   createLineBorder(Color.blue),
+					   createLineBorder(Color.green),
 					   removeVertexButton.getBorder()));
 
-	//Dimension buttonSize = new Dimension(100,50);
 	addEdgeButton = new JButton("Add Edge");
 	addEdgeButton.setMinimumSize(buttonSize);
 	addEdgeButton.setPreferredSize(buttonSize);
@@ -119,7 +131,6 @@ public class KruskalsAlgorithm extends JFrame
 					   createLineBorder(Color.green),
                        addEdgeButton.getBorder()));
 
-    //Dimension buttonSize = new Dimension(100,50);
 	removeEdgeButton = new JButton("Remove Edge");
 	removeEdgeButton.setMinimumSize(buttonSize);
 	removeEdgeButton.setPreferredSize(buttonSize);
@@ -133,7 +144,6 @@ public class KruskalsAlgorithm extends JFrame
 					   createLineBorder(Color.green),
                        removeEdgeButton.getBorder()));
 
-    //Dimension buttonSize = new Dimension(100,50);
 	setEdgeWeightButton = new JButton("Set/Change Edge Weight");
 	setEdgeWeightButton.setMinimumSize(buttonSize);
 	setEdgeWeightButton.setPreferredSize(buttonSize);
@@ -147,7 +157,6 @@ public class KruskalsAlgorithm extends JFrame
 					   createLineBorder(Color.green),
 					   setEdgeWeightButton.getBorder()));
 
-	//Dimension buttonSize = new Dimension(100,50);
 	computeMstButton = new JButton("Compute MST");
 	computeMstButton.setMinimumSize(buttonSize);
 	computeMstButton.setPreferredSize(buttonSize);
@@ -158,9 +167,8 @@ public class KruskalsAlgorithm extends JFrame
 	computeMstButton.
 	    setBorder(BorderFactory.
 		      createCompoundBorder(BorderFactory.
-					   createLineBorder(Color.blue),
+					   createLineBorder(Color.green),
 					   computeMstButton.getBorder()));
-
 
 	clearButton = new JButton("Clear");
 	clearButton.setMinimumSize(buttonSize);
@@ -175,24 +183,27 @@ public class KruskalsAlgorithm extends JFrame
 					   createLineBorder(Color.red),
 					   clearButton.getBorder()));
 
-	buttonPanel.add(Box.createHorizontalGlue());
-	buttonPanel.add(addVertexButton);
-	buttonPanel.add(Box.createHorizontalGlue());
-	buttonPanel.add(removeVertexButton);
-	buttonPanel.add(Box.createHorizontalGlue());
-	buttonPanel.add(addEdgeButton);
-	buttonPanel.add(Box.createHorizontalGlue());
-	buttonPanel.add(removeEdgeButton);
-    buttonPanel.add(Box.createHorizontalGlue());
-    buttonPanel.add(setEdgeWeightButton);
-    buttonPanel.add(Box.createHorizontalGlue());
-    buttonPanel.add(computeMstButton);
-    buttonPanel.add(Box.createHorizontalGlue());
-    buttonPanel.add(clearButton);
-	buttonPanel.add(Box.createHorizontalGlue());
+	buttonPanel1.add(Box.createHorizontalGlue());
+	buttonPanel1.add(addVertexButton);
+	buttonPanel1.add(Box.createHorizontalGlue());
+	buttonPanel1.add(removeVertexButton);
+	buttonPanel1.add(Box.createHorizontalGlue());
+	buttonPanel1.add(addEdgeButton);
+	buttonPanel1.add(Box.createHorizontalGlue());
+	buttonPanel1.add(removeEdgeButton);
+    buttonPanel1.add(Box.createHorizontalGlue());
+
+    buttonPanel2.add(Box.createHorizontalGlue());
+    buttonPanel2.add(setEdgeWeightButton);
+    buttonPanel2.add(Box.createHorizontalGlue());
+    buttonPanel2.add(computeMstButton);
+    buttonPanel2.add(Box.createHorizontalGlue());
+    buttonPanel2.add(clearButton);
+	buttonPanel2.add(Box.createHorizontalGlue());
 
 	contentPane.add((Component)this.canvas);
-	contentPane.add(this.buttonPanel);
+    contentPane.add(this.buttonPanel1);
+    contentPane.add(this.buttonPanel2);
     }
 
     public static void main(String[] args) {
