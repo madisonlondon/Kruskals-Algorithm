@@ -26,18 +26,18 @@ public class KruskalsAlgorithm extends JFrame
 
     // GUI stuff
 
-    MST canvas = null;
+    MST canvas;
 
-    JPanel buttonPanel1 = null;
-    JPanel buttonPanel2 = null;
+    JPanel buttonPanel1;
+    JPanel buttonPanel2;
     JButton addVertexButton, removeVertexButton, addEdgeButton,
     removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton, okayButton;
     JTextField weight;
 
-    ArrayList<Vertex> vertices = null;
-    ArrayList<Edge> edges = null;
-    ArrayList<Vertex> cloud = null;
-    ArrayList<Edge> mst = null;
+    ArrayList<Vertex> vertices;
+    ArrayList<Edge> edges;
+    ArrayList<Vertex> cloud;
+    ArrayList<Edge> mst;
 
     int clickedVertexIndex;
     int clickedEdgeIndex;
@@ -50,9 +50,23 @@ public class KruskalsAlgorithm extends JFrame
         super("Generic Swing App");
         setSize(new Dimension(900,575));
 
+        canvas = null;
+
+        buttonPanel1 = null;
+        buttonPanel2 = null;
         weight = null;
+
+        vertices = null;
+        edges = null;
+        cloud = null;
+        mst = null;
+
         clickedVertexIndex = -1;
+        clickedEdgeIndex = -1;
         temporaryEdge = null;
+        changeEdgeWeights = -1;
+
+        state = States.DEFAULT;
 
         // Initialize main data structures
         initializeDataStructures();
@@ -345,7 +359,7 @@ public class KruskalsAlgorithm extends JFrame
         return x;
     }
 
-    public int onAnEdge(Point point) {
+    public int onEdge(Point point) {
         int n = -1;
 
         if (clickedEdgeIndex > 0) {
@@ -407,9 +421,11 @@ public class KruskalsAlgorithm extends JFrame
     		canvas.repaint();
     	}
     	else if (state == States.ADD_EDGE_1) {
-    		clickedVertexIndex = onVertex(e.getPoint());
-    		state = States.ADD_EDGE_2;
-    		canvas.repaint();
+            clickedVertexIndex = onVertex(e.getPoint());
+            if(clickedVertexIndex != -1){
+                state = States.ADD_EDGE_2;
+                canvas.repaint();
+            }
     	}
     	else if (state == States.ADD_EDGE_2) {
     		int vertexIndex = onVertex(e.getPoint());
