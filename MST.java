@@ -32,7 +32,7 @@ public class MST extends JPanel
     public MST(ArrayList<Edge> graph) {
         graphEdges = graph;
         mst = new ArrayList<Edge>();
-        //graphVertices = new ArrayList<Vertex>();
+        graphVertices = new ArrayList<Vertex>();
     }
 
     public void paintComponent(Graphics g) {
@@ -71,13 +71,13 @@ public class MST extends JPanel
             g.drawString("Weight: " + edge.weight, midpoint.x, midpoint.y);
         }
 
-        for (int i = 0; i < parent.mst.size(); ++i) {
+        for (int i = 0; i < mst.size(); ++i) {
 
         		g.setColor(Color.blue);
 
-        		Edge edge2 = parent.mst.get(i);
-            	Vertex vt1 = edge2.v1;
-            	Vertex vt2 = edge2.v2;
+        		Edge edge = mst.get(i);
+            	Vertex vt1 = edge.v1;
+            	Vertex vt2 = edge.v2;
 
             	g.fillOval(vt1.p.x - parent.NODE_RADIUS, vt1.p.y - parent.NODE_RADIUS,
             			2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
@@ -86,8 +86,8 @@ public class MST extends JPanel
 
 
             	g.drawLine(vt1.p.x, vt1.p.y, vt2.p.x, vt2.p.y);
-            	final Point midpoint2 = edge2.midPoint();
-            	g.drawString("Weight: "+ edge2.weight, midpoint2.x, midpoint2.y);
+            	Point midpoint2 = edge.midPoint();
+            	g.drawString("Weight: "+ edge.weight, midpoint2.x, midpoint2.y);
         }
 
     }
