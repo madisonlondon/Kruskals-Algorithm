@@ -37,14 +37,10 @@ public class MST extends JPanel
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(currentColor);
-
-        //ListIterator<Vertex> iterator = graphVertices.listIterator(0);
-
-        //Vertex currentVertex = null;
-
+        //g.setColor(currentColor);
         for (int i = 0; i < graphVertices.size(); ++i) {
-            //currentVertex = (Vertex) iterator.next();
+
+        		g.setColor(currentColor);
         		Vertex currentVertex = graphVertices.get(i);
 
         		if (currentVertex.hovered) {
@@ -58,6 +54,8 @@ public class MST extends JPanel
         }
 
         for (int i = 0; i < graphEdges.size(); ++i) {
+
+        		g.setColor(currentColor);
             Edge edge = graphEdges.get(i);
 
             if (edge.hovered) {

@@ -498,15 +498,16 @@ public class KruskalsAlgorithm extends JFrame
                 Vertex vertex = vertices.get(clickedVertexIndex);
                 Point point = e.getPoint();
                 temporaryEdge = new Edge(new Vertex(vertex.p), new Vertex(point));
-                int location = this.onVertex(point);
+                int location = onVertex(point);
+
                 if (location != -1 && location != clickedVertexIndex) {
-                    Vertex vertex2 = this.vertices.get(location);
+                    Vertex vertex2 = vertices.get(location);
                     if (edgeExists(vertex.p, vertex2.p)) {
                         vertex2.hovered = false;
                     }
                 }
                 vertex.hovered = true;
-                this.canvas.repaint();
+                canvas.repaint();
                 break;
             }
             case REMOVE_EDGE: // do nothing
