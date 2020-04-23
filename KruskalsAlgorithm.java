@@ -159,7 +159,7 @@ public class KruskalsAlgorithm extends JFrame
         setEdgeWeightButton.setPreferredSize(buttonSize);
         setEdgeWeightButton.setMaximumSize(buttonSize);
         setEdgeWeightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setEdgeWeightButton.setActionCommand("getMST");
+        setEdgeWeightButton.setActionCommand("changeEdgeWeight");
         setEdgeWeightButton.addActionListener(this);
         setEdgeWeightButton.
             setBorder(BorderFactory.
@@ -213,7 +213,7 @@ public class KruskalsAlgorithm extends JFrame
         clearButton.setPreferredSize(buttonSize);
         clearButton.setMaximumSize(buttonSize);
         clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        clearButton.setActionCommand("clearDiagram");
+        clearButton.setActionCommand("clear");
         clearButton.addActionListener(this);
         clearButton.
             setBorder(BorderFactory.
@@ -236,9 +236,9 @@ public class KruskalsAlgorithm extends JFrame
         buttonPanel2.add(Box.createHorizontalGlue());
         buttonPanel2.add(weight);
         buttonPanel2.add(Box.createHorizontalGlue());
-        buttonPanel2.add(computeMstButton);
-        buttonPanel2.add(Box.createHorizontalGlue());
         buttonPanel2.add(okayButton);
+        buttonPanel2.add(Box.createHorizontalGlue());
+        buttonPanel2.add(computeMstButton);
         buttonPanel2.add(Box.createHorizontalGlue());
         buttonPanel2.add(clearButton);
         buttonPanel2.add(Box.createHorizontalGlue());
@@ -264,57 +264,67 @@ public class KruskalsAlgorithm extends JFrame
 
     public void actionPerformed(ActionEvent e) {
 
-    temporaryEdge = null;
-	String buttonIdentifier = e.getActionCommand();
+        temporaryEdge = null;
+        String buttonIdentifier = e.getActionCommand();
 
-	if (buttonIdentifier.equals("addVertex")) {
-        state = States.ADD_VERTEX;
-    }
-    else if (buttonIdentifier.equals("removeVertex")) {
-        state = States.REMOVE_VERTEX;
-    }
-    else if (buttonIdentifier.equals("addEdge")) {
-        state = States.ADD_EDGE_1;
-    }
-    else if (buttonIdentifier.equals("removeEdge")) {
-        state = States.REMOVE_EDGE;
-    }
-    else if (buttonIdentifier.equals("changeEdgeWeight")) {
-        state = States.SET_EDGE_WEIGHT;
-    }
-    else if (buttonIdentifier.equals("createMST")) {
-        state = States.COMPUTE_MST;
-        mst = new MST(edges).getMST();
-        canvas.repaint();
-    }
-    else if (buttonIdentifier.equals("clear")) {
-        vertices.clear();
-        edges.clear();
-        cloud.clear();
-        this.changeEdgeWeights = -1;
-        state = States.DEFAULT;
-        canvas.repaint();
-    }
-    else if (buttonIdentifier.equals("ok") && state == States.SET_EDGE_WEIGHT) {
-        String input = weight.getText();
-        if (input.length() <= 7) {
-            double double1;
-            try {
-                double1 = Double.parseDouble(input);
-            }
-            catch (NumberFormatException ex) {
-                return;
-            }
-            Edge ed = this.edges.get(changeEdgeWeights);
-            ed.weight = double1;
-            ed.hovered = false;
-            changeEdgeWeights = -1;
-            weight.setText("");
+        if (buttonIdentifier.equals("addVertex")) {
+            state = States.ADD_VERTEX;
             weight.setEditable(false);
+            changeEdgeWeights = -1;
+        }
+        else if (buttonIdentifier.equals("removeVertex")) {
+            state = States.REMOVE_VERTEX;
+            weight.setEditable(false);
+            changeEdgeWeights = -1;
+        }
+        else if (buttonIdentifier.equals("addEdge")) {
+            state = States.ADD_EDGE_1;
+            weight.setEditable(false);
+            changeEdgeWeights = -1;
+        }
+        else if (buttonIdentifier.equals("removeEdge")) {
+            state = States.REMOVE_EDGE;
+            weight.setEditable(false);
+            changeEdgeWeights = -1;
+        }
+        else if (buttonIdentifier.equals("changeEdgeWeight")) {
+            state = States.SET_EDGE_WEIGHT;
+        }
+        else if (buttonIdentifier.equals("createMST")) {
+            state = States.COMPUTE_MST;
+            mst = new MST(edges).getMST();
+            weight.setEditable(false);
+            changeEdgeWeights = -1;
             canvas.repaint();
         }
-    }
-
+        else if (buttonIdentifier.equals("clear")) {
+            vertices.clear();
+            edges.clear();
+            cloud.clear();
+            weight.setEditable(false);
+            changeEdgeWeights = -1;
+            state = States.DEFAULT;
+            canvas.repaint();
+        }
+        else if (buttonIdentifier.equals("okay") && state == States.SET_EDGE_WEIGHT) {
+            String input = weight.getText();
+            if (input.length() <= 7) {
+                double double1;
+                try {
+                    double1 = Double.parseDouble(input);
+                }
+                catch (NumberFormatException ex) {
+                    return;
+                }
+                Edge ed = this.edges.get(changeEdgeWeights);
+                ed.weight = double1;
+                ed.hovered = false;
+                changeEdgeWeights = -1;
+                weight.setText("");
+                weight.setEditable(false);
+                canvas.repaint();
+            }
+        }
     }
 
     public int onVertex(Point point) {
@@ -381,13 +391,13 @@ public class KruskalsAlgorithm extends JFrame
         vertices.remove(n);
     }
 
-    @Override
+    // Overriding
     public void mouseClicked(MouseEvent e) {
 
     	if (state == States.ADD_VERTEX) {
     		Point point = e.getPoint();
     		vertices.add(new Vertex(point));
-        canvas.repaint();
+            canvas.repaint();
     	}
     	else if (state == States.REMOVE_VERTEX) {
     		int vertexIndex = onVertex(e.getPoint());
@@ -437,9 +447,9 @@ public class KruskalsAlgorithm extends JFrame
     			//break;
             }
         }
-
         else if (state == States.SET_EDGE_WEIGHT) {
             e.getPoint();
+
             if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
                 edges.get(clickedEdgeIndex).hovered = true;
                 weight.setEditable(true);
@@ -453,16 +463,6 @@ public class KruskalsAlgorithm extends JFrame
         }
     }
 
-
-
-
-/*
-    public void mouseClicked(MouseEvent e) {
-	Point click_point = e.getPoint();
-	vertices.add(new Vertex(click_point));
-	canvas.repaint();
-    }
-*/
     public void initializeDataStructures() {
 
     	vertices = new ArrayList<Vertex>();
