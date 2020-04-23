@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.lang.Object.*;
 
 
 public class KruskalsAlgorithm extends JFrame
@@ -23,6 +24,7 @@ public class KruskalsAlgorithm extends JFrame
     int COMPUTE_MST = 6;
 
     int clickedVertexIndex;
+    int edgeIndex = -1;
 
     // GUI stuff
 
@@ -77,7 +79,7 @@ public class KruskalsAlgorithm extends JFrame
 		      createCompoundBorder(BorderFactory.
 					   createLineBorder(Color.black),
                        buttonPanel1.getBorder()));
-                       
+
     // Create buttonPanel2 and fill it
 	buttonPanel2 = new JPanel();
 	buttonPanel2.setMinimumSize(panelSize);
@@ -273,6 +275,41 @@ public class KruskalsAlgorithm extends JFrame
         return n;
     }
 
+    public int onAnEdge(Point point) {
+        int n = -1;
+
+        if (edgeIndex > 0) {
+
+        		Edge edge = edges.get(edgeIndex);
+        		Line2D line = new Line2D.Double (edge.v1.p, edge.v2.p);
+        		double distanceFromEdge =
+        				line.ptSegDist(edge.v1.p.x, edge.v1.p.y, edge.v2.p.x, edge.v2.p.y, point.x, point.y);
+
+            if (point.distance(edge.midPoint()) <= edge.v1.p.distance(edge.v2.p) / 2.0 &&
+            		distanceFromEdge <= 8.0) {
+                return edgeIndex;
+            }
+            edge.hovered = false;
+        }
+
+        for (int i = 0; i < this.edges.size(); ++i) {
+
+        		Edge edge2 = edges.get(i);
+        		Line2D line2 = new Line2D.Double (edge2.v1.p, edge2.v2.p);
+            double distanceFromEdge2 =
+            		line2.ptSegDist(edge2.v1.p.x, edge2.v1.p.y, edge2.v2.p.x, edge2.v2.p.y, point.x, point.y);
+
+            if (point.distance(edge2.midPoint()) <= edge2.v1.p.distance(edge2.v2.p) / 2.0 &&
+            		distanceFromEdge2 <= 8.0) {
+                n = i;
+                edge2.hovered = true;
+                break;
+            }
+        }
+
+        return n;
+    }
+
     public void removeVertex(int n) {
 
         Vertex vertex = vertices.get(n);
@@ -323,7 +360,21 @@ public class KruskalsAlgorithm extends JFrame
         //this.tempEdge = null;
         STATE = ADD_EDGE_1;
         canvas.repaint();
+    	}
+    	else if (STATE == REMOVE_EDGE) {
+    		e.getPoint();
 
+    		if (edgeIndex != -1) {
+    			Edge edge = edges.get(edgeIndex);
+    			Vertex vt1 = edge.v1;
+    			Vertex vt2 = edge.v2;
+    			vt1.inEdges.remove(edge);
+    			vt2.inEdges.remove(edge);
+    			edges.remove(edgeIndex);
+    			edgeIndex = -1;
+    			canvas.repaint();
+    			//break;
+    		}
     	}
 
     }
