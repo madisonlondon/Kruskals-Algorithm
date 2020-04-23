@@ -26,18 +26,18 @@ public class KruskalsAlgorithm extends JFrame
 
     // GUI stuff
 
-    MST canvas = null;
+    MST canvas;
 
-    JPanel buttonPanel1 = null;
-    JPanel buttonPanel2 = null;
+    JPanel buttonPanel1;
+    JPanel buttonPanel2;
     JButton addVertexButton, removeVertexButton, addEdgeButton,
     removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton, okayButton;
     JTextField weight;
 
-    ArrayList<Vertex> vertices = null;
-    ArrayList<Edge> edges = null;
-    ArrayList<Vertex> cloud = null;
-    ArrayList<Edge> mst = null;
+    ArrayList<Vertex> vertices;
+    ArrayList<Edge> edges;
+    ArrayList<Vertex> cloud;
+    ArrayList<Edge> mst;
 
     int clickedVertexIndex;
     int clickedEdgeIndex;
@@ -50,9 +50,23 @@ public class KruskalsAlgorithm extends JFrame
         super("Generic Swing App");
         setSize(new Dimension(900,575));
 
+        canvas = null;
+
+        buttonPanel1 = null;
+        buttonPanel2 = null;
         weight = null;
+
+        vertices = null;
+        edges = null;
+        cloud = null;
+        mst = null;
+
         clickedVertexIndex = -1;
+        clickedEdgeIndex = -1;
         temporaryEdge = null;
+        changeEdgeWeights = -1;
+
+        state = States.DEFAULT;
 
         // Initialize main data structures
         initializeDataStructures();
@@ -346,7 +360,7 @@ public class KruskalsAlgorithm extends JFrame
         return x;
     }
 
-    public int onAnEdge(Point point) {
+    public int onEdge(Point point) {
         int n = -1;
 
         if (clickedEdgeIndex > 0) {
@@ -358,6 +372,7 @@ public class KruskalsAlgorithm extends JFrame
 
             if (point.distance(edge.midPoint()) <= edge.v1.p.distance(edge.v2.p) / 2.0 &&
             		distanceFromEdge <= 8.0) {
+                edge.hovered = true;
                 return clickedEdgeIndex;
             }
             edge.hovered = false;
@@ -533,7 +548,8 @@ public class KruskalsAlgorithm extends JFrame
             }
             case REMOVE_EDGE: // do nothing
             case SET_EDGE_WEIGHT: {
-                clickedEdgeIndex = onAnEdge(e.getPoint());
+                clickedEdgeIndex = onEdge(e.getPoint());
+
                 if (changeEdgeWeights != -1) {
                     edges.get(changeEdgeWeights).hovered = true;
                 }
