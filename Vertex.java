@@ -18,6 +18,5 @@ public class Vertex
         p = x;
         hovered = false;
         inEdges = new ArrayList<Edge>();
-        System.out.println("in the vertex constructor");
     }
 }
