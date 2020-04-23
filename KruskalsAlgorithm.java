@@ -450,7 +450,7 @@ public class KruskalsAlgorithm extends JFrame
             }
         }
         else if (state == States.REMOVE_EDGE) {
-    		e.getPoint();
+    		clickedEdgeIndex = onEdge(e.getPoint());
 
     		if (clickedEdgeIndex != -1) {
     			Edge edge = edges.get(clickedEdgeIndex);
@@ -461,11 +461,10 @@ public class KruskalsAlgorithm extends JFrame
     			edges.remove(clickedEdgeIndex);
     			clickedEdgeIndex = -1;
     			canvas.repaint();
-    			//break;
             }
         }
         else if (state == States.SET_EDGE_WEIGHT) {
-            e.getPoint();
+            clickedEdgeIndex = onEdge(e.getPoint());
 
             if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
                 edges.get(clickedEdgeIndex).hovered = true;
@@ -528,7 +527,8 @@ public class KruskalsAlgorithm extends JFrame
             }
             case REMOVE_EDGE: // do nothing
             case SET_EDGE_WEIGHT: {
-                //this.edgeNdx = this.onEdge(e.getPoint());
+                clickedEdgeIndex = onEdge(e.getPoint());
+                
                 if (changeEdgeWeights != -1) {
                     edges.get(changeEdgeWeights).hovered = true;
                 }
