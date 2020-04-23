@@ -26,22 +26,23 @@ public class MST extends JPanel
 
     public MST() {
     		graphEdges = new ArrayList<Edge>();
+    		graphVertices = new ArrayList<Vertex>();
     		mst = new ArrayList<Edge>();
     }
 
     public void paintComponent(Graphics g) {
-        //super.paintComponent(g);
+        super.paintComponent(g);
 
         g.setColor(currentColor);
 
-        ListIterator iterator = graphVertices.listIterator(0);
+        ListIterator<Vertex> iterator = graphVertices.listIterator(0);
 
-        Point currentVertex = null;
+        Vertex currentVertex = null;
 
         for (int i=0; i < graphVertices.size(); ++i) {
-            currentVertex = (Point) iterator.next();
-            g.fillOval(currentVertex.x - parent.NODE_RADIUS,
-                   currentVertex.y - parent.NODE_RADIUS,
+            currentVertex = (Vertex) iterator.next();
+            g.fillOval(currentVertex.p.x - parent.NODE_RADIUS,
+                   currentVertex.p.y - parent.NODE_RADIUS,
                    2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
         }
     }
@@ -54,12 +55,12 @@ public class MST extends JPanel
         }
     }
 
-    /*
-    public MST(final ArrayList c) {
-        (this.graphEdges = new ArrayList()).addAll(c);
-        this.mst = new ArrayList();
+
+    public MST(ArrayList<Edge> graph) {
+        graphEdges.addAll(graph);
+        mst = new ArrayList<Edge>();
     }
-    */
+
 
     public ArrayList<Edge> getMST() {
 

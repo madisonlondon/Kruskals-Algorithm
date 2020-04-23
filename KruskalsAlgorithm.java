@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -13,6 +12,15 @@ public class KruskalsAlgorithm extends JFrame
     // The radius in pixels of the circles drawn in graph_panel
 
     final int NODE_RADIUS = 8;
+
+    int STATE = -1;
+    int ADD_VERTEX = 0;
+    int REMOVE_VERTEX = 1;
+    int ADD_EDGE_1 = 2;
+    int ADD_EDGE_2 = 3;
+    int REMOVE_EDGE = 4;
+    int SET_EDGE_WEIGHT = 5;
+    int COMPUTE_MST = 6;
 
     // GUI stuff
 
@@ -29,6 +37,8 @@ public class KruskalsAlgorithm extends JFrame
      */
     ArrayList<Vertex> vertices = null;
     ArrayList<Edge> edges = null;
+    ArrayList<Vertex> cloud = null;
+    ArrayList<Edge> mst = null;
 
     // Event handling stuff
     Dimension panelDim = null;
@@ -47,9 +57,11 @@ public class KruskalsAlgorithm extends JFrame
 
 	//Create the drawing area
 
-	canvas = new MST();
+	canvas = new MST(this);
 	canvas.addMouseListener(null);
-	(this.canvas = new MST(this)).addMouseListener((MouseListener)this);
+	addMouseListener(this);
+	canvas.addMouseMotionListener(null);
+	addMouseMotionListener(this);
 
 	Dimension canvasSize = new Dimension(900,500);
 	canvas.setMinimumSize(canvasSize);
@@ -216,17 +228,51 @@ public class KruskalsAlgorithm extends JFrame
 	    edges.clear();
 	    canvas.repaint();
 	}
+	if (buttonIdentifier.equals("addVertex")) {
+        STATE = ADD_VERTEX;
     }
+    else if (buttonIdentifier.equals("removeVertex")) {
+        STATE = REMOVE_VERTEX;
+    }
+    else if (buttonIdentifier.equals("addEdge")) {
+        STATE = ADD_EDGE_1;
+    }
+    else if (buttonIdentifier.equals("removeEdge")) {
+        STATE = REMOVE_EDGE;
+    }
+    else if (buttonIdentifier.equals("changeEdgeWeight")) {
+        STATE = SET_EDGE_WEIGHT;
+    }
+    else if (buttonIdentifier.equals("createMST")) {
+        STATE = COMPUTE_MST;
+        mst = new MST(edges).getMST();
+        canvas.repaint();
+    }
+    else if (buttonIdentifier.equals("clear")) {
+        vertices.clear();
+        edges.clear();
+        cloud.clear();
+        //this.changeWeightNdx = -1;
+        STATE = -1;
+        canvas.repaint();
+    }
+
+    }
+
+
 
     public void mouseClicked(MouseEvent e) {
 	Point click_point = e.getPoint();
-	//vertices.add(click_point);
+	vertices.add(new Vertex(click_point));
 	canvas.repaint();
     }
 
     public void initializeDataStructures() {
-	vertices = new ArrayList<Vertex>();
+
+    	vertices = new ArrayList<Vertex>();
 	edges = new ArrayList<Edge>();
+	cloud = new ArrayList<Vertex>();
+	mst = new ArrayList<Edge>();
     }
 
     public void mouseExited(MouseEvent e) {}
