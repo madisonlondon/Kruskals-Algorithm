@@ -1,7 +1,6 @@
 // Maddie London and Berke Nuri
 import java.util.ArrayList;
 import java.awt.Point;
-import java.awt.Point;
 import java.util.Objects;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -18,5 +17,7 @@ public class Vertex
         p = x;
         hovered = false;
         inEdges = new ArrayList<Edge>();
+        inCloud = new Cloud();
+        System.out.println("in the vertex constructor");
     }
 }

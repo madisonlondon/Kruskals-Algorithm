@@ -159,7 +159,7 @@ public class KruskalsAlgorithm extends JFrame
         setEdgeWeightButton.setPreferredSize(buttonSize);
         setEdgeWeightButton.setMaximumSize(buttonSize);
         setEdgeWeightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setEdgeWeightButton.setActionCommand("getMST");
+        setEdgeWeightButton.setActionCommand("changeEdgeWeight");
         setEdgeWeightButton.addActionListener(this);
         setEdgeWeightButton.
             setBorder(BorderFactory.
@@ -171,9 +171,9 @@ public class KruskalsAlgorithm extends JFrame
         weight.setMinimumSize(new Dimension(70, 30));
         weight.setPreferredSize(new Dimension(70, 30));
         weight.setMaximumSize(new Dimension(70, 30));
-        weight.setAlignmentX(Component.CENTER_ALIGNMENT);
+        weight.setAlignmentX(1.0f);
         weight.setEditable(false);
-        weight.setActionCommand("changeEdgeWeight");
+        weight.setActionCommand("Set/Change Edge Weight");
         weight.addActionListener(this);
         weight.
             setBorder(BorderFactory.
@@ -187,7 +187,7 @@ public class KruskalsAlgorithm extends JFrame
         computeMstButton.setPreferredSize(buttonSize);
         computeMstButton.setMaximumSize(buttonSize);
         computeMstButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        computeMstButton.setActionCommand("getMST");
+        computeMstButton.setActionCommand("createMST");
         computeMstButton.addActionListener(this);
         computeMstButton.
             setBorder(BorderFactory.
@@ -213,7 +213,7 @@ public class KruskalsAlgorithm extends JFrame
         clearButton.setPreferredSize(buttonSize);
         clearButton.setMaximumSize(buttonSize);
         clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        clearButton.setActionCommand("clearDiagram");
+        clearButton.setActionCommand("clear");
         clearButton.addActionListener(this);
         clearButton.
             setBorder(BorderFactory.
@@ -341,9 +341,9 @@ public class KruskalsAlgorithm extends JFrame
         if (clickedEdgeIndex > 0) {
 
         		Edge edge = edges.get(clickedEdgeIndex);
-        		Line2D line = new Line2D.Double (edge.v1.p, edge.v2.p);
+        		//Line2D line = new Line2D.Double (edge.v1.p, edge.v2.p);
         		double distanceFromEdge =
-        				line.ptSegDist(edge.v1.p.x, edge.v1.p.y, edge.v2.p.x, edge.v2.p.y, point.x, point.y);
+        				Line2D.ptSegDist(edge.v1.p.x, edge.v1.p.y, edge.v2.p.x, edge.v2.p.y, point.x, point.y);
 
             if (point.distance(edge.midPoint()) <= edge.v1.p.distance(edge.v2.p) / 2.0 &&
             		distanceFromEdge <= 8.0) {
@@ -352,12 +352,12 @@ public class KruskalsAlgorithm extends JFrame
             edge.hovered = false;
         }
 
-        for (int i = 0; i < this.edges.size(); ++i) {
+        for (int i = 0; i < edges.size(); ++i) {
 
         		Edge edge2 = edges.get(i);
-        		Line2D line2 = new Line2D.Double (edge2.v1.p, edge2.v2.p);
+        		//Line2D line2 = new Line2D.Double (edge2.v1.p, edge2.v2.p);
             double distanceFromEdge2 =
-            		line2.ptSegDist(edge2.v1.p.x, edge2.v1.p.y, edge2.v2.p.x, edge2.v2.p.y, point.x, point.y);
+            		Line2D.ptSegDist(edge2.v1.p.x, edge2.v1.p.y, edge2.v2.p.x, edge2.v2.p.y, point.x, point.y);
 
             if (point.distance(edge2.midPoint()) <= edge2.v1.p.distance(edge2.v2.p) / 2.0 &&
             		distanceFromEdge2 <= 8.0) {
@@ -384,45 +384,60 @@ public class KruskalsAlgorithm extends JFrame
     @Override
     public void mouseClicked(MouseEvent e) {
 
-    	if (state == States.ADD_VERTEX) {
+    	switch (state) {
+
+    	case ADD_VERTEX: {
     		Point point = e.getPoint();
     		vertices.add(new Vertex(point));
-        canvas.repaint();
-    	}
-    	else if (state == States.REMOVE_VERTEX) {
-    		int vertexIndex = onVertex(e.getPoint());
-    		if (vertexIndex >= 0)
-    			removeVertex(vertexIndex);
-
     		canvas.repaint();
+    		break;
     	}
-    	else if (state == States.ADD_EDGE_1) {
+    	case REMOVE_VERTEX: {
     		clickedVertexIndex = onVertex(e.getPoint());
-    		state = States.ADD_EDGE_2;
+    		if (clickedVertexIndex >= 0)
+    			removeVertex(clickedVertexIndex);
+
     		canvas.repaint();
+    		break;
     	}
-    	else if (state == States.ADD_EDGE_2) {
+    	case ADD_EDGE_1: {
+    		clickedVertexIndex = onVertex(e.getPoint());
+
+    		if (clickedVertexIndex >= 0) {
+    			state = States.ADD_EDGE_2;
+    			canvas.repaint();
+    			break;
+    		}
+    		break;
+
+    	}
+    	case ADD_EDGE_2: {
     		int vertexIndex = onVertex(e.getPoint());
 
-    		Vertex vertex = vertices.get(clickedVertexIndex);
-            Vertex vertex2 = vertices.get(vertexIndex);
+    		if (vertexIndex != clickedVertexIndex && vertexIndex > -1) {
 
-            Edge edge = new Edge(vertex, vertex2);
-            edges.add(edge);
-            vertex.inEdges.add(edge);
-            vertex2.inEdges.add(edge);
+    			Vertex vertex = vertices.get(clickedVertexIndex);
+    			Vertex vertex2 = vertices.get(vertexIndex);
 
-            Vertex vertex3 = vertex;
-            Vertex vertex4 = vertex2;
+    			Edge edge = new Edge(vertex, vertex2);
+    			edges.add(edge);
+    			vertex.inEdges.add(edge);
+    			vertex2.inEdges.add(edge);
 
-            vertex4.hovered = false;
-            vertex3.hovered = false;
-            temporaryEdge = null;
-            state = States.ADD_EDGE_1;
-            canvas.repaint();
+    			Vertex vertex3 = vertex;
+    			Vertex vertex4 = vertex2;
 
-        }
-        else if (state == States.REMOVE_EDGE) {
+    			vertex4.hovered = false;
+    			vertex3.hovered = false;
+    			temporaryEdge = null;
+    			state = States.ADD_EDGE_1;
+    			canvas.repaint();
+    			break;
+    		}
+    		break;
+
+    	}
+    	case REMOVE_EDGE: {
     		e.getPoint();
 
     		if (clickedEdgeIndex != -1) {
@@ -434,38 +449,32 @@ public class KruskalsAlgorithm extends JFrame
     			edges.remove(clickedEdgeIndex);
     			clickedEdgeIndex = -1;
     			canvas.repaint();
-    			//break;
-            }
-        }
+    			break;
+    		}
+    		break;
+    	}
 
-        else if (state == States.SET_EDGE_WEIGHT) {
-            e.getPoint();
-            if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
-                edges.get(clickedEdgeIndex).hovered = true;
-                weight.setEditable(true);
-                weight.setText("");
-                if (changeEdgeWeights != -1) {
-                    edges.get(changeEdgeWeights).hovered = false;
-                }
-                changeEdgeWeights = clickedEdgeIndex;
-                canvas.repaint();
-            }
-        }
+    	case SET_EDGE_WEIGHT: {
+    		e.getPoint();
+    		if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
+    			edges.get(clickedEdgeIndex).hovered = true;
+    			weight.setEditable(true);
+    			weight.setText("");
+    			if (changeEdgeWeights != -1) {
+    				edges.get(changeEdgeWeights).hovered = false;
+    			}
+    			changeEdgeWeights = clickedEdgeIndex;
+    			canvas.repaint();
+    			break;
+    		}
+    		break;
+    	}
+    	}
     }
 
-
-
-
-/*
-    public void mouseClicked(MouseEvent e) {
-	Point click_point = e.getPoint();
-	vertices.add(new Vertex(click_point));
-	canvas.repaint();
-    }
-*/
     public void initializeDataStructures() {
 
-    	vertices = new ArrayList<Vertex>();
+    		vertices = new ArrayList<Vertex>();
 	    edges = new ArrayList<Edge>();
 	    cloud = new ArrayList<Vertex>();
 	    mst = new ArrayList<Edge>();
@@ -512,9 +521,9 @@ public class KruskalsAlgorithm extends JFrame
             }
             case REMOVE_EDGE: // do nothing
             case SET_EDGE_WEIGHT: {
-                //this.edgeNdx = this.onEdge(e.getPoint());
-                if (this.changeEdgeWeights != -1) {
-                    this.edges.get(this.changeEdgeWeights).hovered = true;
+                clickedEdgeIndex = onAnEdge(e.getPoint());
+                if (changeEdgeWeights != -1) {
+                    edges.get(changeEdgeWeights).hovered = true;
                 }
                 this.canvas.repaint();
                 break;

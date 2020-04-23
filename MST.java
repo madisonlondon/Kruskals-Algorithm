@@ -19,6 +19,7 @@ public class MST extends JPanel
         parent = _parent;
         graphVertices = parent.vertices;
         graphEdges = parent.edges;
+        mst = parent.mst;
     }
 
     public MST() {
@@ -29,7 +30,7 @@ public class MST extends JPanel
 
 
     public MST(ArrayList<Edge> graph) {
-        graphEdges.addAll(graph);
+        graphEdges = graph;
         mst = new ArrayList<Edge>();
         //graphVertices = new ArrayList<Vertex>();
     }
@@ -65,7 +66,30 @@ public class MST extends JPanel
             Point p1 = edge.v1.p;
             Point p2 = edge.v2.p;
             g.drawLine(p1.x, p1.y, p2.x, p2.y);
+
+            Point midpoint = edge.midPoint();
+            g.drawString("Weight: " + edge.weight, midpoint.x, midpoint.y);
         }
+
+        for (int i = 0; i < parent.mst.size(); ++i) {
+
+        		g.setColor(Color.blue);
+
+        		Edge edge2 = parent.mst.get(i);
+            	Vertex vt1 = edge2.v1;
+            	Vertex vt2 = edge2.v2;
+
+            	g.fillOval(vt1.p.x - parent.NODE_RADIUS, vt1.p.y - parent.NODE_RADIUS,
+            			2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
+            	g.fillOval(vt2.p.x - parent.NODE_RADIUS, vt2.p.y - parent.NODE_RADIUS,
+            			2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
+
+
+            	g.drawLine(vt1.p.x, vt1.p.y, vt2.p.x, vt2.p.y);
+            	final Point midpoint2 = edge2.midPoint();
+            	g.drawString("Weight: "+ edge2.weight, midpoint2.x, midpoint2.y);
+        }
+
     }
 
     public void changeColor() {

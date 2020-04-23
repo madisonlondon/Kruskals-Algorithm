@@ -9,7 +9,7 @@ public class Cloud
     }
 
     public void addToCloud(Vertex v) {
-        vertices.add(v);
+        this.vertices.add(v);
     }
 
     public static void merge(Cloud c1, Cloud c2) {
@@ -18,8 +18,7 @@ public class Cloud
 
     			Vertex v = c2.vertices.get(i);
     			c1.vertices.add(v);
-          v.inCloud = c1;
+    			v.inCloud = c1;
         }
     }
-
 }
