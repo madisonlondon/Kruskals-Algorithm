@@ -5,9 +5,6 @@ import javax.swing.event.*;
 import java.util.*;
 import javax.swing.JPanel;
 
-//
-// Decompiled by Procyon v0.5.36
-//
 
 public class MST extends JPanel
 {

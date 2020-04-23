@@ -54,10 +54,8 @@ public class KruskalsAlgorithm extends JFrame
 	//Create the drawing area
 
 	canvas = new MST(this);
-	canvas.addMouseListener(null);
-	addMouseListener(this);
-	canvas.addMouseMotionListener(null);
-	addMouseMotionListener(this);
+	canvas.addMouseListener(this);
+	canvas.addMouseMotionListener(this);
 
 	Dimension canvasSize = new Dimension(900,500);
 	canvas.setMinimumSize(canvasSize);
