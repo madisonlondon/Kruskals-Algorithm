@@ -371,6 +371,7 @@ public class KruskalsAlgorithm extends JFrame
 
             if (point.distance(edge.midPoint()) <= edge.v1.p.distance(edge.v2.p) / 2.0 &&
             		distanceFromEdge <= 8.0) {
+                edge.hovered = true;
                 return clickedEdgeIndex;
             }
             edge.hovered = false;
@@ -428,25 +429,25 @@ public class KruskalsAlgorithm extends JFrame
             }
     	}
     	else if (state == States.ADD_EDGE_2) {
-    		int vertexIndex = onVertex(e.getPoint());
-
-    		Vertex vertex = vertices.get(clickedVertexIndex);
-            Vertex vertex2 = vertices.get(vertexIndex);
-
-            Edge edge = new Edge(vertex, vertex2);
-            edges.add(edge);
-            vertex.inEdges.add(edge);
-            vertex2.inEdges.add(edge);
-
-            Vertex vertex3 = vertex;
-            Vertex vertex4 = vertex2;
-
-            vertex4.hovered = false;
-            vertex3.hovered = false;
-            temporaryEdge = null;
-            state = States.ADD_EDGE_1;
-            canvas.repaint();
-
+            int vertexIndex = onVertex(e.getPoint());
+            if(vertexIndex != -1){
+                Vertex vertex = vertices.get(clickedVertexIndex);
+                Vertex vertex2 = vertices.get(vertexIndex);
+    
+                Edge edge = new Edge(vertex, vertex2);
+                edges.add(edge);
+                vertex.inEdges.add(edge);
+                vertex2.inEdges.add(edge);
+    
+                Vertex vertex3 = vertex;
+                Vertex vertex4 = vertex2;
+    
+                vertex4.hovered = false;
+                vertex3.hovered = false;
+                temporaryEdge = null;
+                state = States.ADD_EDGE_1;
+                canvas.repaint();
+            }
         }
         else if (state == States.REMOVE_EDGE) {
     		e.getPoint();
@@ -514,9 +515,9 @@ public class KruskalsAlgorithm extends JFrame
                 Vertex vertex = vertices.get(clickedVertexIndex);
                 Point point = e.getPoint();
                 temporaryEdge = new Edge(new Vertex(vertex.p), new Vertex(point));
-                int location = this.onVertex(point);
+                int location = onVertex(point);
                 if (location != -1 && location != clickedVertexIndex) {
-                    Vertex vertex2 = this.vertices.get(location);
+                    Vertex vertex2 = vertices.get(location);
                     if (edgeExists(vertex.p, vertex2.p)) {
                         vertex2.hovered = false;
                     }
@@ -528,8 +529,8 @@ public class KruskalsAlgorithm extends JFrame
             case REMOVE_EDGE: // do nothing
             case SET_EDGE_WEIGHT: {
                 //this.edgeNdx = this.onEdge(e.getPoint());
-                if (this.changeEdgeWeights != -1) {
-                    this.edges.get(this.changeEdgeWeights).hovered = true;
+                if (changeEdgeWeights != -1) {
+                    edges.get(changeEdgeWeights).hovered = true;
                 }
                 this.canvas.repaint();
                 break;
