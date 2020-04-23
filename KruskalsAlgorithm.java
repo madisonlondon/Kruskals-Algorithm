@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.lang.Object.*;
 
 
 public class KruskalsAlgorithm extends JFrame
@@ -39,7 +40,7 @@ public class KruskalsAlgorithm extends JFrame
     ArrayList<Edge> mst = null;
 
     int clickedVertexIndex;
-    int clickedEdge; 
+    int clickedEdgeIndex; 
     Edge temporaryEdge;
     int changeEdgeWeights;
 
@@ -334,6 +335,41 @@ public class KruskalsAlgorithm extends JFrame
         return x;
     }
 
+    public int onAnEdge(Point point) {
+        int n = -1;
+
+        if (clickedEdgeIndex > 0) {
+
+        		Edge edge = edges.get(clickedEdgeIndex);
+        		Line2D line = new Line2D.Double (edge.v1.p, edge.v2.p);
+        		double distanceFromEdge =
+        				line.ptSegDist(edge.v1.p.x, edge.v1.p.y, edge.v2.p.x, edge.v2.p.y, point.x, point.y);
+
+            if (point.distance(edge.midPoint()) <= edge.v1.p.distance(edge.v2.p) / 2.0 &&
+            		distanceFromEdge <= 8.0) {
+                return clickedEdgeIndex;
+            }
+            edge.hovered = false;
+        }
+
+        for (int i = 0; i < this.edges.size(); ++i) {
+
+        		Edge edge2 = edges.get(i);
+        		Line2D line2 = new Line2D.Double (edge2.v1.p, edge2.v2.p);
+            double distanceFromEdge2 =
+            		line2.ptSegDist(edge2.v1.p.x, edge2.v1.p.y, edge2.v2.p.x, edge2.v2.p.y, point.x, point.y);
+
+            if (point.distance(edge2.midPoint()) <= edge2.v1.p.distance(edge2.v2.p) / 2.0 &&
+            		distanceFromEdge2 <= 8.0) {
+                n = i;
+                edge2.hovered = true;
+                break;
+            }
+        }
+
+        return n;
+    }
+
     public void removeVertex(int n) {
 
         Vertex vertex = vertices.get(n);
@@ -386,20 +422,35 @@ public class KruskalsAlgorithm extends JFrame
             canvas.repaint();
 
         }
-        else if (state == States.SET_EDGE_WEIGHT) {
-            e.getPoint();
-            if (clickedEdge != -1 && clickedEdge != clickedEdge) {
-                edges.get(clickedEdge).hovered = true;
-                weight.setEditable(true);
-                weight.setText("");
-                if (clickedEdge != -1) {
-                    edges.get(clickedEdge).hovered = false;
-                }
-                clickedEdge = clickedEdge;
-                canvas.repaint();
+        else if (state == States.REMOVE_EDGE) {
+    		e.getPoint();
+
+    		if (clickedEdgeIndex != -1) {
+    			Edge edge = edges.get(clickedEdgeIndex);
+    			Vertex vt1 = edge.v1;
+    			Vertex vt2 = edge.v2;
+    			vt1.inEdges.remove(edge);
+    			vt2.inEdges.remove(edge);
+    			edges.remove(clickedEdgeIndex);
+    			clickedEdgeIndex = -1;
+    			canvas.repaint();
+    			//break;
             }
         }
 
+        else if (state == States.SET_EDGE_WEIGHT) {
+            e.getPoint();
+            if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
+                edges.get(clickedEdgeIndex).hovered = true;
+                weight.setEditable(true);
+                weight.setText("");
+                if (changeEdgeWeights != -1) {
+                    edges.get(changeEdgeWeights).hovered = false;
+                }
+                changeEdgeWeights = clickedEdgeIndex;
+                canvas.repaint();
+            }
+        }
     }
 
 

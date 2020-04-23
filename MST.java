@@ -47,6 +47,10 @@ public class MST extends JPanel
             //currentVertex = (Vertex) iterator.next();
         		Vertex currentVertex = graphVertices.get(i);
 
+        		if (currentVertex.hovered) {
+                    g.setColor(Color.yellow);
+            }
+
             g.fillOval(currentVertex.p.x - parent.NODE_RADIUS,
                    currentVertex.p.y - parent.NODE_RADIUS,
                    2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
@@ -55,6 +59,10 @@ public class MST extends JPanel
 
         for (int i = 0; i < graphEdges.size(); ++i) {
             Edge edge = graphEdges.get(i);
+
+            if (edge.hovered) {
+                g.setColor(Color.yellow);
+            }
 
             Point p1 = edge.v1.p;
             Point p2 = edge.v2.p;
