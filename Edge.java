@@ -16,13 +16,10 @@ public class Edge implements Comparable
         weight = 1.0; // default edge weight is 1
     }
 
+    @Override
     public int compareTo(Object o) {
        return  (this.weight < ((Edge) o).weight ? -1 : (this.weight == ((Edge) o).weight ? 0 : 1));
-    }
-
-    public double length() {
-        return v1.p.distance(v2.p);
-    }
+   }
 
     public Point midPoint() {
         return new Point((int)(0.5 * (this.v1.p.x + this.v2.p.x)),
