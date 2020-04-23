@@ -14,7 +14,7 @@ public class KruskalsAlgorithm extends JFrame
 
     final int NODE_RADIUS = 8;
 
-    enum States {DEFAULT, ADD_VERTEX, REMOVE_VERTEX, ADD_EDGE_1, ADD_EDGE_2, REMOVE_EDGE, SET_EDGE_WEIGHT, COMPUTE_MST } 
+    enum States {DEFAULT, ADD_VERTEX, REMOVE_VERTEX, ADD_EDGE_1, ADD_EDGE_2, REMOVE_EDGE, SET_EDGE_WEIGHT, COMPUTE_MST }
     States state = States.DEFAULT;
     int ADD_VERTEX = 0;
     int REMOVE_VERTEX = 1;
@@ -362,7 +362,7 @@ public class KruskalsAlgorithm extends JFrame
         state = States.ADD_EDGE_1;
         canvas.repaint();
     	}
-    	else if (STATE == REMOVE_EDGE) {
+    	else if (state == States.REMOVE_EDGE) {
     		e.getPoint();
 
     		if (edgeIndex != -1) {
@@ -401,30 +401,30 @@ public class KruskalsAlgorithm extends JFrame
     // Overriding
     public void mouseMoved(MouseEvent e) {
         switch (state) {
-            case DEFAULT: 
+            case DEFAULT:
             case ADD_VERTEX:
             case REMOVE_VERTEX:
-            case ADD_EDGE_1: 
+            case ADD_EDGE_1:
             case ADD_EDGE_2:
             case REMOVE_EDGE:
             case SET_EDGE_WEIGHT:
-            case COMPUTE_MST: 
+            case COMPUTE_MST:
         }
     }
 
-    // Overriding 
+    // Overriding
     public void mouseExited(MouseEvent e) {}
 
-    // Overriding 
+    // Overriding
     public void mouseEntered(MouseEvent e) {}
 
-    // Overriding 
+    // Overriding
     public void mouseReleased(MouseEvent e) {}
 
-    // Overriding 
+    // Overriding
     public void mousePressed(MouseEvent e) {}
 
-    // Overriding 
+    // Overriding
     public void mouseDragged(MouseEvent e) {}
 
 }
