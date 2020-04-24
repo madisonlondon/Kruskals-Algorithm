@@ -13,7 +13,6 @@ public class MST extends JPanel
     ArrayList<Vertex> graphVertices;
     ArrayList<Edge> mst;
     Color currentColor = Color.red;
-    Edge potentialEdge;
 
     public MST(KruskalsAlgorithm _parent) {
         // constructor
@@ -21,7 +20,6 @@ public class MST extends JPanel
         parent = _parent;
         graphVertices = parent.vertices;
         graphEdges = parent.edges;
-        potentialEdge = parent.potentialEdge;
         mst = parent.mst;
     }
 
@@ -75,16 +73,6 @@ public class MST extends JPanel
             Point midpoint = edge.midPoint();
             g.drawString("Weight: " + edge.weight, midpoint.x, midpoint.y);
 
-        }
-
-        // Potential edge
-        if(potentialEdge != null) {
-            System.out.println("drawing line to cursor");
-            g.setColor(Color.yellow);
-
-            Point p1 = potentialEdge.v1.p;
-            Point p2 = potentialEdge.v2.p;
-            g.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
 
         if (parent.mst.size() > 0) {

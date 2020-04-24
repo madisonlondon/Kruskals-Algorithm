@@ -43,8 +43,8 @@ public class KruskalsAlgorithm extends JFrame
     int clickedEdgeIndex;
     Edge temporaryEdge;
     int changeEdgeWeights;
-    Edge potentialEdge;
 
+    
     Dimension panelDim = null;
 
     public KruskalsAlgorithm() {
@@ -67,7 +67,6 @@ public class KruskalsAlgorithm extends JFrame
         clickedEdgeIndex = -1;
         temporaryEdge = null;
         changeEdgeWeights = -1;
-        potentialEdge = null;
 
         state = States.DEFAULT;
 
@@ -538,8 +537,6 @@ public class KruskalsAlgorithm extends JFrame
             }
             case ADD_EDGE_2: {
                 Vertex vertex = vertices.get(clickedVertexIndex);
-                Point mouse = MouseInfo.getPointerInfo().getLocation();
-                potentialEdge = new Edge(vertex, new Vertex(mouse));
                 Point point = e.getPoint();
                 temporaryEdge = new Edge(new Vertex(vertex.p), new Vertex(point));
                 int location = onVertex(point);
