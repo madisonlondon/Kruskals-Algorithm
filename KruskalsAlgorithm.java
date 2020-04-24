@@ -208,7 +208,7 @@ public class KruskalsAlgorithm extends JFrame
         computeMstButton.
             setBorder(BorderFactory.
                 createCompoundBorder(BorderFactory.
-                        createLineBorder(Color.green),
+                        createLineBorder(Color.blue),
                         computeMstButton.getBorder()));
 
         okayButton = new JButton("Okay");

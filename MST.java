@@ -42,21 +42,22 @@ public class MST extends JPanel
 
         for (int i = 0; i < graphVertices.size(); ++i) {
 
-        	g.setColor(currentColor);
-        	Vertex currentVertex = graphVertices.get(i);
+        		g.setColor(currentColor);
+        		Vertex currentVertex = graphVertices.get(i);
 
-        	if (currentVertex.hovered) {
+        		if (currentVertex.hovered) {
                 g.setColor(Color.yellow);
             }
 
             g.fillOval(currentVertex.p.x - parent.NODE_RADIUS,
                    currentVertex.p.y - parent.NODE_RADIUS,
                    2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
+
         }
 
         for (int i = 0; i < graphEdges.size(); ++i) {
 
-        	g.setColor(currentColor);
+        		g.setColor(currentColor);
             Edge edge = graphEdges.get(i);
 
             if (edge.hovered) {
@@ -69,9 +70,10 @@ public class MST extends JPanel
 
             Point midpoint = edge.midPoint();
             g.drawString("Weight: " + edge.weight, midpoint.x, midpoint.y);
+
         }
 
-        // Potential edge 
+        // Potential edge
         if(potentialEdge != null) {
             System.out.println("drawing line to cursor");
             g.setColor(Color.yellow);
@@ -81,11 +83,12 @@ public class MST extends JPanel
             g.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
 
-        for (int i = 0; i < mst.size(); ++i) {
+        if (parent.mst.size() > 0) {
+        for (int i = 0; i < parent.mst.size(); ++i) {
 
-        	g.setColor(Color.blue);
+        		g.setColor(Color.blue);
 
-            Edge edge = mst.get(i);
+            Edge edge = parent.mst.get(i);
             Vertex vt1 = edge.v1;
             Vertex vt2 = edge.v2;
 
@@ -98,6 +101,7 @@ public class MST extends JPanel
             g.drawLine(vt1.p.x, vt1.p.y, vt2.p.x, vt2.p.y);
             Point midpoint2 = edge.midPoint();
             g.drawString("Weight: "+ edge.weight, midpoint2.x, midpoint2.y);
+        }
         }
 
     }
@@ -113,10 +117,12 @@ public class MST extends JPanel
     public ArrayList<Edge> getMST() {
 
     		startCloud();
+    		ArrayList<Edge> temp = new ArrayList<Edge>();
 
         while (graphEdges.size() > 0) {
 
         		Edge e = graphEdges.remove(0);
+        		temp.add(e);
             Vertex vertex1 = e.v1;
             Vertex vertex2 = e.v2;
             Cloud c1 = vertex1.inCloud;
@@ -127,6 +133,9 @@ public class MST extends JPanel
                 Cloud.merge(c1, c2);
             }
         }
+
+        graphEdges.addAll(temp);
+
         return mst;
     }
 
@@ -140,11 +149,11 @@ public class MST extends JPanel
             Vertex vertex1 = edge.v1;
             Vertex vertex2 = edge.v2;
 
-            if (vertex1.inCloud == null) {
+            if (vertex1.inCloud.vertices.size() == 0) {
                 vertex1.inCloud.addToCloud(vertex1);
             }
 
-            if (vertex2.inCloud == null) {
+            if (vertex2.inCloud.vertices.size() == 0) {
                 vertex2.inCloud.addToCloud(vertex2);
             }
         }
