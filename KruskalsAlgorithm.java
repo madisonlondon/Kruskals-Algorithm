@@ -7,7 +7,6 @@ import java.awt.geom.*;
 import java.util.*;
 import java.lang.Object.*;
 
-
 public class KruskalsAlgorithm extends JFrame
     implements ActionListener, MouseListener, MouseMotionListener {
 

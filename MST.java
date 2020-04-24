@@ -6,7 +6,6 @@ import javax.swing.event.*;
 import java.util.*;
 import javax.swing.JPanel;
 
-
 public class MST extends JPanel
 {
     KruskalsAlgorithm parent = null;
