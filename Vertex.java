@@ -1,4 +1,5 @@
 // Maddie London and Berke Nuri
+
 import java.util.ArrayList;
 import java.awt.Point;
 import java.util.Objects;
@@ -14,6 +15,7 @@ public class Vertex
     ArrayList<Edge> inEdges;
 
     public Vertex(Point x) {
+        // constructor
         p = x;
         hovered = false;
         inEdges = new ArrayList<Edge>();
