@@ -332,7 +332,6 @@ public class KruskalsAlgorithm extends JFrame
                 return;
             }
             Edge ed = edges.get(changeEdgeWeights);
-            state = States.DEFAULT;
             ed.weight = double1;
             ed.hovered = false;
             changeEdgeWeights = -1;
