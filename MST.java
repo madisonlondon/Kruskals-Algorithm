@@ -13,12 +13,14 @@ public class MST extends JPanel
     ArrayList<Vertex> graphVertices;
     ArrayList<Edge> mst;
     Color currentColor = Color.red;
+    Edge potentialEdge;
 
     public MST(KruskalsAlgorithm _parent) {
         super();
         parent = _parent;
         graphVertices = parent.vertices;
         graphEdges = parent.edges;
+        potentialEdge = parent.potentialEdge;
         mst = parent.mst;
     }
 
@@ -38,25 +40,23 @@ public class MST extends JPanel
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        //g.setColor(currentColor);
         for (int i = 0; i < graphVertices.size(); ++i) {
 
-        		g.setColor(currentColor);
-        		Vertex currentVertex = graphVertices.get(i);
+        	g.setColor(currentColor);
+        	Vertex currentVertex = graphVertices.get(i);
 
-        		if (currentVertex.hovered) {
-                    g.setColor(Color.yellow);
+        	if (currentVertex.hovered) {
+                g.setColor(Color.yellow);
             }
 
             g.fillOval(currentVertex.p.x - parent.NODE_RADIUS,
                    currentVertex.p.y - parent.NODE_RADIUS,
                    2*parent.NODE_RADIUS, 2*parent.NODE_RADIUS);
-
         }
 
         for (int i = 0; i < graphEdges.size(); ++i) {
 
-        		g.setColor(currentColor);
+        	g.setColor(currentColor);
             Edge edge = graphEdges.get(i);
 
             if (edge.hovered) {
@@ -71,23 +71,33 @@ public class MST extends JPanel
             g.drawString("Weight: " + edge.weight, midpoint.x, midpoint.y);
         }
 
+        // Potential edge 
+        if(potentialEdge != null) {
+            System.out.println("drawing line to cursor");
+            g.setColor(Color.yellow);
+
+            Point p1 = potentialEdge.v1.p;
+            Point p2 = potentialEdge.v2.p;
+            g.drawLine(p1.x, p1.y, p2.x, p2.y);
+        }
+
         for (int i = 0; i < mst.size(); ++i) {
 
-        		g.setColor(Color.blue);
+        	g.setColor(Color.blue);
 
-        		Edge edge = mst.get(i);
-            	Vertex vt1 = edge.v1;
-            	Vertex vt2 = edge.v2;
+            Edge edge = mst.get(i);
+            Vertex vt1 = edge.v1;
+            Vertex vt2 = edge.v2;
 
-            	g.fillOval(vt1.p.x - parent.NODE_RADIUS, vt1.p.y - parent.NODE_RADIUS,
-            			2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
-            	g.fillOval(vt2.p.x - parent.NODE_RADIUS, vt2.p.y - parent.NODE_RADIUS,
-            			2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
+            g.fillOval(vt1.p.x - parent.NODE_RADIUS, vt1.p.y - parent.NODE_RADIUS,
+                    2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
+            g.fillOval(vt2.p.x - parent.NODE_RADIUS, vt2.p.y - parent.NODE_RADIUS,
+                    2 * parent.NODE_RADIUS, 2 * parent.NODE_RADIUS);
 
 
-            	g.drawLine(vt1.p.x, vt1.p.y, vt2.p.x, vt2.p.y);
-            	Point midpoint2 = edge.midPoint();
-            	g.drawString("Weight: "+ edge.weight, midpoint2.x, midpoint2.y);
+            g.drawLine(vt1.p.x, vt1.p.y, vt2.p.x, vt2.p.y);
+            Point midpoint2 = edge.midPoint();
+            g.drawString("Weight: "+ edge.weight, midpoint2.x, midpoint2.y);
         }
 
     }
@@ -142,8 +152,8 @@ public class MST extends JPanel
 
     public static void main(String args[]) {
 
-    		Vertex v1 = new Vertex(new Point());
-    		Vertex v2 = new Vertex(new Point());
+        Vertex v1 = new Vertex(new Point());
+    	Vertex v2 = new Vertex(new Point());
         Edge e1 = new Edge(v1, v2);
         e1.weight = 0;
         Edge e2 = new Edge(v1, v1);
