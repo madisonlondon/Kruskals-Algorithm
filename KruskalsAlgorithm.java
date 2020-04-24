@@ -48,6 +48,7 @@ public class KruskalsAlgorithm extends JFrame
     Dimension panelDim = null;
 
     public KruskalsAlgorithm() {
+        // constructor
         super("Generic Swing App");
         setSize(new Dimension(900,575));
 
@@ -71,7 +72,7 @@ public class KruskalsAlgorithm extends JFrame
         state = States.DEFAULT;
 
         // Initialize main data structures
-        initializeDataStructures();
+        initializeLists();
 
         //The content pane
         Container contentPane = getContentPane();
@@ -265,7 +266,7 @@ public class KruskalsAlgorithm extends JFrame
     }
 
     public static void main(String[] args) {
-
+    // main method where we make and call an instance of KruskalsAlgorithm
     KruskalsAlgorithm project = new KruskalsAlgorithm();
 	project.addWindowListener(new WindowAdapter() {
 		public void
@@ -279,16 +280,17 @@ public class KruskalsAlgorithm extends JFrame
     }
 
     public void actionPerformed(ActionEvent e) {
-
+    // Overriding 
     temporaryEdge = null;
     for (int i = 0; i < this.vertices.size(); ++i) {
-        vertices.get(i).hovered = false;
+        vertices.get(i).hovered = false; // make sure no vertices are previously highlighted
     }
     for (int i = 0; i < this.edges.size(); ++i) {
-        edges.get(i).hovered = false;
+        edges.get(i).hovered = false; // make sure no edges are previously highlighted
     }
-    mst.clear();
+    mst.clear(); // when a new action is performed, the old MST may change, so we want to clear it
     canvas.repaint();
+
 	String buttonIdentifier = e.getActionCommand();
 
 	if (buttonIdentifier.equals("addVertex")) {
@@ -319,6 +321,7 @@ public class KruskalsAlgorithm extends JFrame
         canvas.repaint();
     }
     else if (buttonIdentifier.equals("enter") && state == States.SET_EDGE_WEIGHT) {
+        // parse the user input for edge weight
         String input = weight.getText();
         if (input.length() <= 7) {
             double double1;
@@ -340,18 +343,20 @@ public class KruskalsAlgorithm extends JFrame
     }
 
     if(state != States.SET_EDGE_WEIGHT) {
+        // when the user has not clicked on the set/change edge weight button, do not allow the user to enter input
         weight.setText("");
         weight.setEditable(false);
-        if (changeEdgeWeights != -1) {
+        if (changeEdgeWeights > -1) {
             edges.get(changeEdgeWeights).hovered = false;
             changeEdgeWeights = -1;
         }
         canvas.repaint();
     }
-
     }
 
     public int onVertex(Point point) {
+        // if the point of the event occured on a vertex, return the index if that vertex in vertices
+        // if not, return -1
         int x = -1;
 
         for (int i = 0; i < vertices.size(); ++i) {
@@ -370,9 +375,11 @@ public class KruskalsAlgorithm extends JFrame
     }
 
     public int onEdge(Point point) {
+        // if the point of the event occured on an edge, return the index of that edge in edges
+        // if not, return -1
         int n = -1;
 
-        if (clickedEdgeIndex != -1) {
+        if (clickedEdgeIndex > -1) {
 
         		Edge edge = edges.get(clickedEdgeIndex);
         		double distanceFromEdge =
@@ -403,7 +410,7 @@ public class KruskalsAlgorithm extends JFrame
     }
 
     public void removeVertex(int n) {
-
+        // remove a vertex from vertices
         Vertex vertex = vertices.get(n);
 
         for (int i = 0; i < vertex.inEdges.size(); ++i) {
@@ -413,20 +420,20 @@ public class KruskalsAlgorithm extends JFrame
         vertices.remove(n);
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
-
+        // overriding
     	switch (state) {
 
     	case ADD_VERTEX: {
     		Point point = e.getPoint();
-    		vertices.add(new Vertex(point));
+    		vertices.add(new Vertex(point)); // add a new vertex
     		canvas.repaint();
     		break;
     	}
     	case REMOVE_VERTEX: {
     		clickedVertexIndex = onVertex(e.getPoint());
-    		if (clickedVertexIndex >= 0)
+            if (clickedVertexIndex >= 0) 
+                // if the point where the user clicked is on a vertex, remove that vertex
     			removeVertex(clickedVertexIndex);
 
     		canvas.repaint();
@@ -434,20 +441,18 @@ public class KruskalsAlgorithm extends JFrame
     	}
     	case ADD_EDGE_1: {
     		clickedVertexIndex = onVertex(e.getPoint());
-
-    		if (clickedVertexIndex >= 0) {
+    		if (clickedVertexIndex >= 0) { 
+                // if the point where the user clicked is on a vertex, change to the state ADD_EDGE_2
     			state = States.ADD_EDGE_2;
     			canvas.repaint();
-    			break;
     		}
     		break;
 
     	}
     	case ADD_EDGE_2: {
     		int vertexIndex = onVertex(e.getPoint());
-
-    		if (vertexIndex != clickedVertexIndex && vertexIndex > -1) {
-
+    		if (vertexIndex != clickedVertexIndex && vertexIndex > -1) { 
+                // if the point where the user clicked is on a vertex and a vertex that is different than the first, then create an edge
     			Vertex vertex = vertices.get(clickedVertexIndex);
     			Vertex vertex2 = vertices.get(vertexIndex);
 
@@ -464,15 +469,14 @@ public class KruskalsAlgorithm extends JFrame
     			temporaryEdge = null;
     			state = States.ADD_EDGE_1;
     			canvas.repaint();
-    			break;
     		}
     		break;
 
     	}
     	case REMOVE_EDGE: {
     		e.getPoint();
-
-    		if (clickedEdgeIndex != -1) {
+    		if (clickedEdgeIndex > -1) { 
+                // if the point the user clicked is on an edge, remove that edge
     			Edge edge = edges.get(clickedEdgeIndex);
     			Vertex vt1 = edge.v1;
     			Vertex vt2 = edge.v2;
@@ -481,37 +485,37 @@ public class KruskalsAlgorithm extends JFrame
     			edges.remove(clickedEdgeIndex);
     			clickedEdgeIndex = -1;
     			canvas.repaint();
-    			break;
     		}
     		break;
     	}
     	case SET_EDGE_WEIGHT: {
     		e.getPoint();
-    		if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
+    		if (clickedEdgeIndex > -1 && clickedEdgeIndex != changeEdgeWeights) {
+                // if the point the user clicked is on an edge, change that edge weight 
                 edges.get(clickedEdgeIndex).hovered = true;
     			weight.setEditable(true);
     			weight.setText("");
-    			if (changeEdgeWeights != -1) {
+    			if (changeEdgeWeights > -1) {
     				edges.get(changeEdgeWeights).hovered = false;
     			}
     			changeEdgeWeights = clickedEdgeIndex;
     			canvas.repaint();
-    			break;
     		}
     		break;
     	}
     	}
     }
 
-    public void initializeDataStructures() {
-
-    		vertices = new ArrayList<Vertex>();
+    public void initializeLists() {
+        // initialize the arraylists
+    	vertices = new ArrayList<Vertex>();
 	    edges = new ArrayList<Edge>();
 	    cloud = new ArrayList<Vertex>();
 	    mst = new ArrayList<Edge>();
     }
 
     public boolean edgeExists(Point p1,  Point p2) {
+        // Check to see if an edge already exists
         boolean exists = false;
         for (int i = 0; i < this.edges.size(); ++i) {
             Edge edge = this.edges.get(i);
@@ -524,8 +528,8 @@ public class KruskalsAlgorithm extends JFrame
         return exists;
     }
 
-    // Overriding
     public void mouseMoved(MouseEvent e) {
+        // Overriding
         switch (state) {
             case DEFAULT: // do nothing
             case ADD_VERTEX: // do nothing
@@ -543,7 +547,8 @@ public class KruskalsAlgorithm extends JFrame
                 temporaryEdge = new Edge(new Vertex(vertex.p), new Vertex(point));
                 int location = onVertex(point);
 
-                if (location != -1 && location != clickedVertexIndex) {
+                if (location > -1 && location != clickedVertexIndex) { 
+                    // if the location is on a vertex and it is not the same vertex as the one already selected for the new edge
                     Vertex vertex2 = vertices.get(location);
                     if (edgeExists(vertex.p, vertex2.p)) {
                         vertex2.hovered = false;
@@ -557,7 +562,7 @@ public class KruskalsAlgorithm extends JFrame
             case SET_EDGE_WEIGHT: {
                 clickedEdgeIndex = onEdge(e.getPoint());
 
-                if (changeEdgeWeights != -1) {
+                if (changeEdgeWeights > -1) {
                     edges.get(changeEdgeWeights).hovered = true;
                 }
                 this.canvas.repaint();
