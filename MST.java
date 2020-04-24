@@ -16,6 +16,7 @@ public class MST extends JPanel
     Edge potentialEdge;
 
     public MST(KruskalsAlgorithm _parent) {
+        // constructor
         super();
         parent = _parent;
         graphVertices = parent.vertices;
@@ -25,6 +26,7 @@ public class MST extends JPanel
     }
 
     public MST() {
+        // constructor with no parameters
     		graphEdges = new ArrayList<Edge>();
     		graphVertices = new ArrayList<Vertex>();
     		mst = new ArrayList<Edge>();
@@ -32,12 +34,14 @@ public class MST extends JPanel
 
 
     public MST(ArrayList<Edge> graph) {
+        // constructor when the only parameter is an Arraylist of edges
         graphEdges = graph;
         mst = new ArrayList<Edge>();
         graphVertices = new ArrayList<Vertex>();
     }
 
     public void paintComponent(Graphics g) {
+        // draw the app
         super.paintComponent(g);
 
         for (int i = 0; i < graphVertices.size(); ++i) {
@@ -107,6 +111,7 @@ public class MST extends JPanel
     }
 
     public void changeColor() {
+        // change the color
         if (currentColor.equals(Color.red)) {
             currentColor = Color.yellow;
         } else {
@@ -115,9 +120,9 @@ public class MST extends JPanel
     }
 
     public ArrayList<Edge> getMST() {
-
-    		startCloud();
-    		ArrayList<Edge> temp = new ArrayList<Edge>();
+        // returns an Arraylist of edges in the MST
+    	startCloud();
+    	ArrayList<Edge> temp = new ArrayList<Edge>();
 
         while (graphEdges.size() > 0) {
 
@@ -140,23 +145,21 @@ public class MST extends JPanel
     }
 
     public void startCloud() {
+        // create the cloud by adding the appropriate vertices
+        for (int i = 0; i < graphEdges.size(); ++i) {
+            graphEdges.sort(null);
 
-    		for (int i = 0; i < graphEdges.size(); ++i) {
-
-        		graphEdges.sort(null);
-
-        		Edge edge = graphEdges.get(i);
+            Edge edge = graphEdges.get(i);
             Vertex vertex1 = edge.v1;
             Vertex vertex2 = edge.v2;
 
             if (vertex1.inCloud.vertices.size() == 0) {
                 vertex1.inCloud.addToCloud(vertex1);
             }
-
             if (vertex2.inCloud.vertices.size() == 0) {
                 vertex2.inCloud.addToCloud(vertex2);
             }
-        }
+    }
     }
 
     public static void main(String args[]) {
