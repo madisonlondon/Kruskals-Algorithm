@@ -203,7 +203,7 @@ public class KruskalsAlgorithm extends JFrame
         computeMstButton.setPreferredSize(buttonSize);
         computeMstButton.setMaximumSize(buttonSize);
         computeMstButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        computeMstButton.setActionCommand("createMST");
+        computeMstButton.setActionCommand("computeMST");
         computeMstButton.addActionListener(this);
         computeMstButton.
             setBorder(BorderFactory.
@@ -306,7 +306,7 @@ public class KruskalsAlgorithm extends JFrame
     else if (buttonIdentifier.equals("changeEdgeWeight")) {
         state = States.SET_EDGE_WEIGHT;
     }
-    else if (buttonIdentifier.equals("createMST")) {
+    else if (buttonIdentifier.equals("computeMST")) {
         state = States.COMPUTE_MST;
         mst = new MST(edges).getMST();
         canvas.repaint();
@@ -469,8 +469,6 @@ public class KruskalsAlgorithm extends JFrame
 
     	}
     	case REMOVE_EDGE: {
-    		e.getPoint();
-
     		if (clickedEdgeIndex != -1) {
     			Edge edge = edges.get(clickedEdgeIndex);
     			Vertex vt1 = edge.v1;
@@ -485,7 +483,6 @@ public class KruskalsAlgorithm extends JFrame
     		break;
     	}
     	case SET_EDGE_WEIGHT: {
-    		e.getPoint();
     		if (clickedEdgeIndex != -1 && clickedEdgeIndex != changeEdgeWeights) {
                 edges.get(clickedEdgeIndex).hovered = true;
     			weight.setEditable(true);
