@@ -31,7 +31,7 @@ public class KruskalsAlgorithm extends JFrame
     JPanel buttonPanel1;
     JPanel buttonPanel2;
     JButton addVertexButton, removeVertexButton, addEdgeButton,
-    removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton, okayButton;
+    removeEdgeButton, setEdgeWeightButton, computeMstButton, clearButton, enterButton;
     JTextField weight;
 
     ArrayList<Vertex> vertices;
@@ -211,18 +211,18 @@ public class KruskalsAlgorithm extends JFrame
                         createLineBorder(Color.blue),
                         computeMstButton.getBorder()));
 
-        okayButton = new JButton("Okay");
-        okayButton.setMinimumSize(buttonSize);
-        okayButton.setPreferredSize(buttonSize);
-        okayButton.setMaximumSize(buttonSize);
-        okayButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        okayButton.setActionCommand("okay");
-        okayButton.addActionListener(this);
-        okayButton.
+        enterButton = new JButton("Enter");
+        enterButton.setMinimumSize(buttonSize);
+        enterButton.setPreferredSize(buttonSize);
+        enterButton.setMaximumSize(buttonSize);
+        enterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        enterButton.setActionCommand("enter");
+        enterButton.addActionListener(this);
+        enterButton.
             setBorder(BorderFactory.
                     createCompoundBorder(BorderFactory.
                             createLineBorder(Color.green),
-                            okayButton.getBorder()));
+                            enterButton.getBorder()));
 
         clearButton = new JButton("Clear");
         clearButton.setMinimumSize(buttonSize);
@@ -252,7 +252,7 @@ public class KruskalsAlgorithm extends JFrame
         buttonPanel2.add(Box.createHorizontalGlue());
         buttonPanel2.add(weight);
         buttonPanel2.add(Box.createHorizontalGlue());
-        buttonPanel2.add(okayButton);
+        buttonPanel2.add(enterButton);
         buttonPanel2.add(Box.createHorizontalGlue());
         buttonPanel2.add(computeMstButton);
         buttonPanel2.add(Box.createHorizontalGlue());
@@ -318,7 +318,7 @@ public class KruskalsAlgorithm extends JFrame
         state = States.DEFAULT;
         canvas.repaint();
     }
-    else if (buttonIdentifier.equals("okay") && state == States.SET_EDGE_WEIGHT) {
+    else if (buttonIdentifier.equals("enter") && state == States.SET_EDGE_WEIGHT) {
         String input = weight.getText();
         if (input.length() <= 7) {
             double double1;
@@ -329,6 +329,7 @@ public class KruskalsAlgorithm extends JFrame
                 return;
             }
             Edge ed = edges.get(changeEdgeWeights);
+            state = States.DEFAULT;
             ed.weight = double1;
             ed.hovered = false;
             changeEdgeWeights = -1;
